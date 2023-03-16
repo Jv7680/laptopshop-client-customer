@@ -1,0 +1,26 @@
+.button-go-top {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 15px;
+    bottom: 96px;
+    border: 2px solid #e4e5f0;
+    border-radius: 4px;
+    background-color: #f2f8ff;
+    width: 40px;
+    height: 40px;
+    z-index: 20;
+    font-size: 20px;
+    color: #8183d8;
+}
+
+.button-go-top:hover {
+    color: #474af0;
+    border-color: #a9abe3;
+    background-color: #f3f3f3;
+}
+
+.button-go-top--show {
+    display: flex;
+}

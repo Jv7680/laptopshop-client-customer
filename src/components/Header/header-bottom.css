@@ -1,0 +1,8 @@
+.nav-item {
+    padding-left: 0 !important;
+    padding-right: 2rem !important;
+}
+
+.navbar-expand-sm .navbar-nav .nav-link {
+    padding-left: 0;
+}

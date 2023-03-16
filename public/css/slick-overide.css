@@ -1,0 +1,85 @@
+/* overide css Slider React Slick */
+:root {
+    --slick-list-height: 240px;
+    --slick-list-img-height: 232px;
+    --slick-list-height-modal: 82vh;
+    --slick-list-img-height-modal: 80vh;
+}
+
+.slick-list {
+    height: auto !important;
+    margin-top: 0px !important;
+    background-color: white;
+}
+
+/* .slick-dots li {
+    width: auto !important;
+    padding: 0 !important;
+  
+  } */
+
+.slick-dots li button:before {
+    color: #474af0 !important;
+}
+
+.slick-dots {
+    /* bottom: 30px !important; */
+    top: 98%;
+}
+
+.ReactModal__Overlay--after-open {
+    z-index: 888;
+}
+
+/* .slick-list {
+    height: 430px !important;
+    margin-top: 35px !important;
+  } */
+
+.slick-prev,
+.slick-next {
+    top: 50% !important;
+    z-index: 1;
+    background: transparent !important;
+    font-size: 20px !important;
+    font-family: initial;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 15px !important;
+    /* border: 1px solid #a6aaad !important; */
+}
+
+.slick-prev {
+    left: 0 !important;
+}
+
+.slick-next {
+    right: 0 !important;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    content: "" !important;
+    width: 15px;
+    height: 15px;
+    border-radius: 0px;
+    display: block;
+    border-top: 3px solid #a6aaad;
+    border-left: 3px solid #a6aaad;
+    margin: auto !important;
+}
+
+.slick-prev::before {
+    transform: rotateZ(315deg);
+}
+
+.slick-next::before {
+    transform: rotateZ(135deg);
+}
+
+.slick-prev:hover:before,
+.slick-prev:focus:before,
+.slick-next:hover:before,
+.slick-next:focus:before {
+    opacity: 1 !important;
+}

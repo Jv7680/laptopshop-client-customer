@@ -1,0 +1,128 @@
+.hm-searchbox {
+    align-items: center;
+}
+
+button.li-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 37px;
+    top: 3px;
+    right: 3px;
+    border-radius: 5px;
+    padding: 0 30px;
+}
+
+button.keyboard-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    right: 72px;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: unset;
+}
+
+.keyboard-component {
+    display: none;
+    position: fixed;
+    bottom: 10px;
+    z-index: 880;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    font-size: 18px;
+}
+
+.keyboard-component .hg-button:hover {
+    border: 1px solid orange;
+}
+
+.keyboard-component--show {
+    display: block;
+}
+
+button.micro-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    right: 104px;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: unset;
+}
+
+.history-search {
+    list-style: none;
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid #e1e1e1;
+    background-color: #fff;
+    z-index: 3;
+    position: absolute;
+    top: calc(100% + 6px);
+    box-sizing: border-box;
+    display: none;
+    /* visibility: hidden; */
+}
+
+
+.history-search__header {
+    color: #999;
+    padding-left: 33px;
+    padding-top: 10px;
+    padding-bottom: 6px;
+}
+
+.history-search__item {
+    padding-left: 33px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    cursor: pointer;
+}
+
+.history-search__item:hover {
+    background-color: #fafafa
+}
+
+button.li-btn:hover {
+    background: #5658dd;
+    color: #ffffff;
+}
+
+.hm-minicart-trigger {
+    color: #242424;
+    transition: all 0.3s ease-in-out;
+}
+
+.hm-minicart-trigger:hover {
+    background: #5658dd;
+    /* color: #ffffff; */
+}
+
+.cart-item-count {
+    top: 0px !important;
+    right: 0px !important;
+    left: auto !important;
+    font-size: 15px;
+    color: #ffffff;
+}
+
+.cart-item-count:hover {
+    background: #5658dd;
+}

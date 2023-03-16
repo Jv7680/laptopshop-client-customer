@@ -1,0 +1,56 @@
+.slider-discount-product .slick-slider .slick-list {
+  background-color: transparent;
+}
+
+.slider-discount-product .slick-slider .slick-prev {
+  left: -20px !important;
+}
+
+.slider-discount-product .slick-slider .slick-next {
+  right: -20px !important;
+}
+
+
+/* .slick-arrow slick-prev {
+  background: black !important;
+} */
+
+.fix-ml {
+  margin-left: 2.5rem !important;
+}
+
+.fix-img-div-trend {
+  height: 230px;
+  width: auto;
+  overflow: hidden;
+  text-align: center;
+}
+
+.fix-img-trend {
+  height: 90%;
+  width: 80% !important;
+  object-fit: contain;
+}
+
+.fix-img-div-new {
+  height: 180px !important;
+  width: auto;
+  overflow: hidden;
+  text-align: center;
+}
+
+.fix-img-new {
+  height: 90%;
+  width: 80% !important;
+  object-fit: contain;
+}
+
+.sticker {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.discount-laptop-title {
+  font-size: 20px;
+  font-weight: 500;
+}

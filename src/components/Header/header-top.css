@@ -1,0 +1,4 @@
+.right-header-top .fix-link-color:first-child {
+    border-right: 1px solid rgb(201, 201, 201);
+    padding-right: 5px;
+}
