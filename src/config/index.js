@@ -2,7 +2,7 @@ export const config = {
   api: {
 
     //url: "http://banlinhkienpt.us-west-2.elasticbeanstalk.com",
-    // url:"http://localhost:8080"
+    // url: "http://localhost:8080"
     url: "https://laptopshop-server.herokuapp.com"
   },
   paypal: {

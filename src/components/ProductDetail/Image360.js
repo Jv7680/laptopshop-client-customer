@@ -19,7 +19,7 @@ class Image360 extends Component {
         // Thay thế lần lượt theo thứ tự src hiện tại của component bằng link ảnh
         if (listImage360URL.length > 0) {
             for (let i = 0; i < listImage360URL.length; i++) {
-                imageReact360Viewer = document.getElementsByClassName('sc-beySbM hmghSZ')[i];
+                imageReact360Viewer = document.getElementsByClassName('sc-beySbM')[i];
                 if (imageReact360Viewer) {
                     imageReact360Viewer.setAttribute('src', listImage360URL[i]);
                 }
