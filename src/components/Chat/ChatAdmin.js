@@ -4,7 +4,7 @@ import MessageItem from "./MessageItem";
 
 import './chat.css';
 
-class ChatGPT extends React.Component {
+class ChatAdmin extends React.Component {
     render() {
         const { messageListAdmin } = this.props;
         return (
@@ -24,4 +24,4 @@ class ChatGPT extends React.Component {
     }
 }
 
-export default ChatGPT;
+export default ChatAdmin;

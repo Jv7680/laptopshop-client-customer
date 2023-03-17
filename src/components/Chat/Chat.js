@@ -4,10 +4,13 @@ import ChatAdmin from "./ChatAdmin";
 import ChatGPT from "./ChatGPT";
 import axios from "axios";
 import PulseLoader from 'react-spinners/PulseLoader';
+import { connect } from 'react-redux';
 import { css } from '@emotion/core';
+import { readUserChatData, writeUserChatData } from "../../firebase/RealtimeDatabase";
 
 import './chat.css';
 import { toast } from "react-toastify";
+import { async } from "@firebase/util";
 
 const cssPulseLoader = css`
     margin: auto;
@@ -48,9 +51,61 @@ class Chat extends React.Component {
         };
 
         this.countDidUpdate = 0;
+        this.userId = this.props.user.accountId;
     }
 
-    componentDidUpdate = () => {
+    getDatamessageListAdmin = async () => {
+        this.setState({
+            chatContent: '',
+            messageListAdmin: [{
+                user: 'admin',
+                content: 'Laptop PT xin chào quý khách! Chúng tôi có thể hỗ trợ gì cho bạn?'
+            }],
+        });
+        let { messageListAdmin } = this.state;
+        let userId = parseInt(localStorage.getItem('_idaccount'));
+        // get list user chat with admin
+        let messageList = await readUserChatData(userId);
+        console.log('messageList:', messageList, userId);
+
+        // update messageListAdmin state
+        messageListAdmin = messageListAdmin.concat(messageList);
+        console.log('messageListAdmin:', messageListAdmin);
+        setTimeout(() => {
+            this.setState({
+                chatContent: '',
+                messageListAdmin
+            });
+        }, 500);
+    }
+
+    // componentDidMount = async () => {
+    //     await this.getDatamessageListAdmin();
+    // }
+
+    componentDidUpdate = async () => {
+        console.log('vào did update chat', this.userId, this.props.user.accountId);
+        // update state when logout
+        if (this.userId && !this.props.user.accountId) {
+            this.userId = this.props.user.accountId;
+            this.setState({
+                chatContent: '',
+                messageListAdmin: [{
+                    user: 'admin',
+                    content: 'Laptop PT xin chào quý khách! Chúng tôi có thể hỗ trợ gì cho bạn?'
+                }],
+                messageListChatGPT: [{
+                    user: 'chatGPT',
+                    content: 'Hello there! How can I assist you today?'
+                }],
+            });
+        }
+        // update state when login
+        else if (!this.userId && this.props.user.accountId) {
+            this.userId = this.props.user.accountId;
+            await this.getDatamessageListAdmin();
+        }
+
         let { modalState } = this.state;
         setTimeout(() => {
             let modalchat1 = document.getElementsByClassName('left-col__chat-name1')[0];
@@ -96,10 +151,6 @@ class Chat extends React.Component {
         }
     }
 
-    componentWillUnmount = () => {
-        this.countDidUpdate = 0;
-    }
-
     formatChatContent = (stringRes) => {
         // console.log('stringRes1', stringRes);
         // cắt 2 \n\n đầu tiên
@@ -121,23 +172,37 @@ class Chat extends React.Component {
 
     handleSubmit = async () => {
         let { modalState, messageListAdmin, messageListChatGPT, chatContent } = this.state;
+        let { user } = this.props;
         if (chatContent.length === 0) {
             toast.error('Bạn chưa nhập nội dung chat!');
             return;
         }
         let messageItem = {
             user: 'user',
+            userName: `${user.lastname} ${user.firstname}`,
             content: this.formatChatContent(chatContent),
         };
 
         if (modalState === 1) {
-            // thêm api để lưu chat các đoạn chat và database
-            messageListAdmin.push(messageItem);
+            let handleChange = this.handleChange;
+            let inputChatContentLoading = document.getElementsByClassName('input-chat-content-loading')[0];
+            try {
+                // khóa thanh input
+                inputChatContentLoading.classList.add('input-chat-content-loading--show');
+                this.handleChange = () => { };
 
-            this.setState({
-                chatContent: '',
-                messageListAdmin: messageListAdmin,
-            });
+                // write user chat into firebase database
+                // messageListAdmin.push(messageItem);
+                await writeUserChatData(this.userId, messageItem);
+
+                // get data again
+                await this.getDatamessageListAdmin();
+            }
+            finally {
+                // mở thanh input
+                this.handleChange = handleChange;
+                inputChatContentLoading.classList.remove('input-chat-content-loading--show');
+            }
         }
         else if (modalState === 2) {
             messageListChatGPT.push(messageItem);
@@ -216,13 +281,22 @@ class Chat extends React.Component {
         event.target.style.height = (event.target.scrollHeight) + "px";
     }
 
-    openModal = (modalStateParam) => {
+    openModal = async (modalStateParam) => {
         const { modalState } = this.state;
         document.getElementsByTagName('body')[0].classList.add('prevent-scroll-body');
         this.setState({
             modalIsOpen: true,
             modalState: modalStateParam ? modalStateParam : modalState,
+            chatContent: '',
+            messageListAdmin: [{
+                user: 'admin',
+                content: 'Laptop PT xin chào quý khách! Chúng tôi có thể hỗ trợ gì cho bạn?'
+            }],
         });
+
+        setTimeout(async () => {
+            await this.getDatamessageListAdmin();
+        }, 1000);
     }
 
     closeModal = () => {
@@ -235,6 +309,7 @@ class Chat extends React.Component {
 
     render() {
         const { modalIsOpen, modalState, chatContent, messageListAdmin, messageListChatGPT } = this.state;
+        const { user } = this.props;
         return (
             <div className="chat-area">
                 <img
@@ -279,20 +354,31 @@ class Chat extends React.Component {
                                 }
                                 {/* row sent chat */}
                                 <div className="chat-sent-area">
-                                    <div className="col-12 input-chat-content">
-                                        {/* <input type="text" placeholder="Nội dung" /> */}
-                                        <textarea
-                                            className="chat-content-textarea"
-                                            autoFocus={true}
-                                            name="chatContent"
-                                            placeholder="Nội dung"
-                                            rows="1"
-                                            value={chatContent}
-                                            onChange={(event) => { this.handleChange(event); this.handleOnInput(event); }}
-                                        >
-                                        </textarea>
-                                        <i className="fa-regular fa-paper-plane" onClick={() => { this.handleSubmit() }}></i>
-                                    </div>
+                                    {
+                                        user.accountId ?
+                                            (
+                                                <div className="col-12 input-chat-content">
+                                                    {/* <input type="text" placeholder="Nội dung" /> */}
+                                                    <textarea
+                                                        className="chat-content-textarea"
+                                                        autoFocus={true}
+                                                        name="chatContent"
+                                                        placeholder="Nội dung"
+                                                        rows="1"
+                                                        value={chatContent}
+                                                        onChange={(event) => { this.handleChange(event); this.handleOnInput(event); }}
+                                                    >
+                                                    </textarea>
+                                                    <i className="fa-regular fa-paper-plane" onClick={() => { this.handleSubmit() }}></i>
+                                                </div>
+                                            )
+                                            :
+                                            (
+                                                <div className="col-12 input-chat-content" style={{ justifyContent: 'center' }}>
+                                                    Bạn cần đăng nhập để có thể chat!
+                                                </div>
+                                            )
+                                    }
                                     <div className="col-12 input-chat-content-loading">
                                         <PulseLoader
                                             css={cssPulseLoader}
@@ -313,4 +399,12 @@ class Chat extends React.Component {
     }
 }
 
-export default Chat;
+// export default Chat;
+
+const mapStateToProps = state => {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps)(Chat);

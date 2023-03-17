@@ -289,7 +289,7 @@ class HeaderMiddle extends Component {
                   type="button"
                   onClick={this.showHideKeyboard}
                 >
-                  <i class="fa-regular fa-keyboard"></i>
+                  <i className="fa-regular fa-keyboard"></i>
                 </button>
                 <div className='keyboard-component'>
                   <Keyboard
@@ -303,7 +303,7 @@ class HeaderMiddle extends Component {
                   type="button"
                 // onClick={this.showHideKeyboard}
                 >
-                  <i class="fa-solid fa-microphone"></i>
+                  <i className="fa-solid fa-microphone"></i>
                 </button>
               </form>
               {/* Header Middle Searchbox Area End Here */}

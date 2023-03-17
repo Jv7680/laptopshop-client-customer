@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import './style.css'
 import { actTokenRequest } from '../../redux/actions/auth'
-import { actFetchUserRequset } from '../../redux/actions/user';
+import { actFetchUserRequset, actFetchUser } from '../../redux/actions/user';
 import { startLoading, doneLoading } from '../../utils/loading'
 
 import store from '../..';
@@ -25,6 +25,8 @@ class HeaderTop extends Component {
 
     //cập nhập lại giỏ hàng thành rỗng
     store.dispatch(actFetchCart([]));
+    //cập nhập lại user rỗng
+    store.dispatch(actFetchUser({}));
 
     startLoading();
     await this.props.setTokenRedux(token);

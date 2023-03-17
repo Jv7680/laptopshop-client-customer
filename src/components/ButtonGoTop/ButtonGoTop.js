@@ -10,7 +10,7 @@ class ButtonGoTop extends React.Component {
     render() {
         return (
             <div className='button-go-top' onClick={() => { this.handleOnClick() }}>
-                <i class="fa-solid fa-angle-up"></i>
+                <i className="fa-solid fa-angle-up"></i>
             </div>
         )
     }
