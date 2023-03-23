@@ -10,6 +10,7 @@ import { actAddWishListRequest } from '../../../../redux/actions/wishlist'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css';
 import BeautyStars from 'beauty-stars';
+import { getProductFirstImageURL } from '../../../../firebase/CRUDImage';
 import Swal from 'sweetalert2';
 import './style.css';
 toast.configure()
@@ -21,7 +22,25 @@ class TopDiscountProductItems extends Component {
     super(props);
     this.state = {
       offset: 0,
-      quantity: 1
+      quantity: 1,
+      imageURL: '',
+    }
+  }
+
+  componentDidMount = async () => {
+    let { productId } = this.props.product;
+    let imageURL = await getProductFirstImageURL(productId);
+    // console.log(`vào componentDidMount imageURL ${productId}:`, imageURL);
+
+    if (imageURL === '') {
+      this.setState({
+        imageURL: process.env.PUBLIC_URL + '/images/logo/logoPTCustomer.png',
+      });
+    }
+    else {
+      this.setState({
+        imageURL
+      });
     }
   }
 
@@ -77,15 +96,15 @@ class TopDiscountProductItems extends Component {
 
   render() {
     const { product } = this.props;
-    const { quantity } = this.state;
+    const { imageURL } = this.state;
 
     return (
       <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0 50px' }}>
         <div className="single-product-wrap" style={{ width: '90%' }}>
           <div className="fix-img-div-new product-image">
             <img
-              src={product.image}
-              alt="Li's Product"
+              src={imageURL}
+              alt="Not found"
               onClick={(id) => this.getInfoProduct(product.productId)}
               style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             {

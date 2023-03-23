@@ -1,0 +1,47 @@
+.speech-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.speech-area__micro {
+    position: relative;
+}
+
+.speech-area__micro svg {
+    position: relative;
+    z-index: 10;
+    font-size: 30px;
+    color: red;
+}
+
+.speech-area__micro i {
+    position: relative;
+    z-index: 10;
+    font-size: 30px;
+    color: #474af0;
+}
+
+.speech-area__micro .css-1ol6pu0 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.speech-area__micro-detail {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.speech-area__micro-detail span {
+    color: #474af0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.speech-area__text-result {}

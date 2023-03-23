@@ -6,18 +6,36 @@ import { actFetchCartRequest } from '../../redux/actions/cart';
 import { actGetProductOfKeyRequest } from '../../redux/actions/products'
 import { actFetchWishListRequest } from '../../redux/actions/wishlist'
 import { withRouter } from 'react-router-dom';
+import Speech from './Speech';
+import Modal from "react-modal";
 import Keyboard from "react-simple-keyboard";
 
 import './header-middle.css';
 import "react-simple-keyboard/build/css/index.css";
 
 let token, id;
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    width: "300px",
+    height: "300px",
+    maxHeight: "96vh",
+    overflow: "auto",
+  }
+};
+
 class HeaderMiddle extends Component {
   constructor(props) {
     super(props);
     this.state = {
       textSearch: '',
       layoutName: "default",
+      openModalSpeech: false,
     }
   }
 
@@ -220,6 +238,28 @@ class HeaderMiddle extends Component {
     });
   };
 
+  openModal = () => {
+    document.getElementsByTagName('body')[0].classList.add('prevent-scroll-body');
+    this.setState({
+      openModalSpeech: true,
+    });
+  }
+
+  closeModal = () => {
+    document.getElementsByTagName('body')[0].classList.remove('prevent-scroll-body');
+    this.setState({ openModalSpeech: false });
+  }
+
+  setTextSearch = (textSearch) => {
+    this.setState({
+      openModalSpeech: false,
+      textSearch: textSearch
+    },
+      () => {
+        this.handleClick();
+      });
+  }
+
   render() {
     setTimeout(() => {
       //ẩn các dòng historySearch empty
@@ -235,7 +275,7 @@ class HeaderMiddle extends Component {
       }
     }, 500);
 
-    const { textSearch } = this.state;
+    const { textSearch, openModalSpeech } = this.state;
     const { cart, xwishList } = this.props;
     const wishList = [];
 
@@ -301,7 +341,7 @@ class HeaderMiddle extends Component {
                 </div>
                 <button className="micro-btn"
                   type="button"
-                // onClick={this.showHideKeyboard}
+                  onClick={this.openModal}
                 >
                   <i className="fa-solid fa-microphone"></i>
                 </button>
@@ -363,6 +403,17 @@ class HeaderMiddle extends Component {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={openModalSpeech}
+          // isOpen={true}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          ariaHideApp={false}
+          contentLabel="Example Modal"
+        >
+          <span className="btn-close-modal" onClick={() => { this.closeModal() }}><i className="fa-solid fa-xmark"></i></span>
+          <Speech setTextSearch={this.setTextSearch}></Speech>
+        </Modal>
       </div>
     )
   }

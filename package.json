@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.11",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -35,6 +37,7 @@
     "react-simple-keyboard": "^3.5.37",
     "react-simple-star-rating": "4.0.5",
     "react-slick": "^0.25.2",
+    "react-speech-recognition": "^3.10.0",
     "react-spinners": "^0.6.1",
     "react-toastify": "^5.4.0",
     "react-two-thumb-input-range": "^1.0.7",

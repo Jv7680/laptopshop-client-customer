@@ -6,6 +6,7 @@ import './chat.css';
 class MessageItem extends React.Component {
     render() {
         const { messageItem } = this.props;
+
         return (
             <>
                 {
