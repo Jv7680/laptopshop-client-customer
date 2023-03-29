@@ -12,22 +12,28 @@ export default function Speech(props) {
     transcript,
     finalTranscript,
     listening,
-    resetTranscript,
     browserSupportsSpeechRecognition,
     isMicrophoneAvailable
   } = useSpeechRecognition();
   console.log('listening', listening, countRender);
+  let timeOutID;
 
   useEffect(() => {
     console.log('vào useEffect', props);
     // start listening, khi start render lạ 2 lần, lần thứ 2 ms chính thức đặt listening thành true
     SpeechRecognition.startListening();
 
+    timeOutID = setTimeout(() => {
+      console.log('bắt đầu settimeout');
+      SpeechRecognition.stopListening();
+    }, 6000);
+
     return () => {
       console.log('vào useEffect return');
       countRender = 0;
       countSetTextSearch = 0;
       SpeechRecognition.abortListening();
+      clearTimeout(timeOutID);
     }
   }, []);
 

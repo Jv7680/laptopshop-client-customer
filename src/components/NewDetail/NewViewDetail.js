@@ -90,7 +90,7 @@ class NewViewDetail extends Component {
             <div className="product-details-view-content sp-normal-content pt-60">
               {/* Ảnh tiêu đề */}
               <div style={{ margin: '0 0 15px 0' }}>
-                <img className="fix-imgNew"
+                <img className=""
                   src={_new.imageLink} alt="Li's Product "
                 // style={{
                 //   display: 'block',

@@ -1,5 +1,5 @@
 import { realtimeDB } from "./firebaseConfig";
-import { ref, set, onValue, get, child } from "firebase/database";
+import { ref, set, update, get, child } from "firebase/database";
 
 let objSent = {
     role: 'user',
@@ -63,4 +63,21 @@ export async function readUserChatData(userId) {
     });
 
     return messageList;
+}
+
+// update seen status
+export async function updateSeenStatus(userId, updateIndex, status) {
+    const dbRef = ref(realtimeDB);
+    const updates = {
+        [`userChat/${userId}/${updateIndex}/userHasSeen`]: status,
+    };
+    console.log('updateSeenStatus', userId, updateIndex, status);
+    // updates['userChat/6/1/userHasSeen'] = userId;
+
+    if (userId && updateIndex != 0 && status) {
+        await update(dbRef, updates)
+            .catch((e) => {
+                console.log('error in updateSeenStatus:', e);
+            });
+    }
 }

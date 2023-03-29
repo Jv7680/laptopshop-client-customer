@@ -4,9 +4,10 @@ import ChatAdmin from "./ChatAdmin";
 import ChatGPT from "./ChatGPT";
 import axios from "axios";
 import PulseLoader from 'react-spinners/PulseLoader';
+import ChatNotice from "./ChatNotice";
 import { connect } from 'react-redux';
 import { css } from '@emotion/core';
-import { readUserChatData, writeUserChatData } from "../../firebase/RealtimeDatabase";
+import { readUserChatData, writeUserChatData, updateSeenStatus } from "../../firebase/RealtimeDatabase";
 import { realtimeDB } from "../../firebase/firebaseConfig";
 import { ref, onValue, off } from "firebase/database";
 
@@ -38,6 +39,7 @@ class Chat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showChatNotice: false,
             modalIsOpen: false,
             modalState: 1,
             chatContent: '',
@@ -52,6 +54,7 @@ class Chat extends React.Component {
         };
 
         this.currentModalIsOpen = false;
+        this.lastIndexOfChatAdminList = 0;
         this.countDidUpdate = 0;
         this.userId = this.props.user.accountId;
     }
@@ -76,17 +79,6 @@ class Chat extends React.Component {
         });
     }
 
-    // componentDidMount = async () => {
-    //     if (this.props.user.accountId) {
-    //         // trigger onValue here to listening value change
-    //         await onValue(ref(realtimeDB, 'userChat/' + `${this.props.user.accountId}`), (snapshot) => {
-    //             console.log('trigged onValue(), listening');
-    //             console.log('snap', snapshot);
-    //             console.log('snapshot.val()', snapshot.val());
-    //         });
-    //     }
-    // }
-
     componentDidUpdate = async () => {
         console.log('vào did update chat', this.userId, this.props.user.accountId);
         // update state when logout
@@ -96,6 +88,7 @@ class Chat extends React.Component {
 
             this.userId = this.props.user.accountId;
             this.setState({
+                showChatNotice: false,
                 chatContent: '',
                 messageListAdmin: [{
                     user: 'admin',
@@ -122,12 +115,40 @@ class Chat extends React.Component {
                     content: 'Laptop PT xin chào quý khách! Chúng tôi có thể hỗ trợ gì cho bạn?'
                 }];
                 if (snapshot.val()) {
+                    this.lastIndexOfChatAdminList = --snapshot.val().length;
                     // update messageListAdmin state
                     let newMessageListAdmin = initMessageListAdmin.concat(snapshot.val());
                     console.log('newMessageListAdmin snapshot:', newMessageListAdmin);
                     this.setState({
                         messageListAdmin: newMessageListAdmin,
                     });
+
+                    // show chat notice
+                    if (snapshot.val()[snapshot.val().length - 1].user === 'admin') {
+                        console.log('vào show chat notice:', snapshot.val()[snapshot.val().length - 1]);
+                        // user hasn't seen admin message
+                        if (!snapshot.val()[snapshot.val().length - 1].userHasSeen) {
+                            if (this.state.modalIsOpen && this.state.modalState === 1) {
+                                console.log('updateSeenStatus hide chat notice:');
+                                updateSeenStatus(this.userId, this.lastIndexOfChatAdminList, true);
+                            }
+                            else {
+                                // show notice
+                                console.log('show chat notice:');
+                                this.setState({
+                                    showChatNotice: true,
+                                });
+                            }
+                        }
+                        else {
+                            // hide notice
+                            console.log('hide chat notice:');
+                            this.setState({
+                                showChatNotice: false,
+                            });
+                        }
+
+                    }
                 }
                 else {
                     console.log('newMessageListAdmin snapshot2:', this.state.messageListAdmin);
@@ -137,27 +158,6 @@ class Chat extends React.Component {
                 }
             });
         }
-
-        let { modalState } = this.state;
-        setTimeout(() => {
-            let modalchat1 = document.getElementsByClassName('left-col__chat-name1')[0];
-            let modalchat2 = document.getElementsByClassName('left-col__chat-name2')[0];
-
-            if (modalState === 1 && modalchat1) {
-                modalchat1.classList.add('left-col__chat-name--active');
-                modalchat2.classList.remove('left-col__chat-name--active');
-            }
-            else if (modalState === 2 && modalchat2) {
-                modalchat1.classList.remove('left-col__chat-name--active');
-                modalchat2.classList.add('left-col__chat-name--active');
-            }
-
-            let chatContentTextArea = document.getElementsByClassName("chat-content-textarea")[0];
-            if (chatContentTextArea && chatContentTextArea.scrollHeight < 85) {
-                chatContentTextArea.style.height = "";
-                chatContentTextArea.style.height = (chatContentTextArea.scrollHeight) + "px";
-            }
-        }, 150);
 
         // scroll content area xuống cuối cùng mỗi khi update
         let chatContentArea = document.getElementsByClassName('chat-content-area')[0];
@@ -196,6 +196,7 @@ class Chat extends React.Component {
             user: 'user',
             userName: `${user.lastname} ${user.firstname}`,
             content: this.formatChatContent(chatContent),
+            adminHasSeen: false,
         };
 
         if (modalState === 1) {
@@ -310,7 +311,36 @@ class Chat extends React.Component {
         },
             async () => {
                 await this.getDatamessageListAdmin();
+
+                if (this.userId) {
+                    // if delete node user id, don't forget reload page to restore lastIndexOfChatAdminList back to 0,
+                    // so the updateSeenStatus will not be call => no error throw 
+                    if (this.state.modalState != 2 && this.lastIndexOfChatAdminList != 0) {
+                        // console.log('xxx', this.state.modalState)
+                        await updateSeenStatus(this.userId, this.lastIndexOfChatAdminList, true);
+                    }
+                }
+
+                let modalchat1 = document.getElementsByClassName('left-col__chat-name1')[0];
+                let modalchat2 = document.getElementsByClassName('left-col__chat-name2')[0];
+
+                if (this.state.modalState === 1 && modalchat1) {
+                    modalchat1.classList.add('left-col__chat-name--active');
+                    modalchat2.classList.remove('left-col__chat-name--active');
+                }
+                else if (this.state.modalState === 2 && modalchat2) {
+                    modalchat1.classList.remove('left-col__chat-name--active');
+                    modalchat2.classList.add('left-col__chat-name--active');
+                }
+
+                let chatContentTextArea = document.getElementsByClassName("chat-content-textarea")[0];
+                if (chatContentTextArea && chatContentTextArea.scrollHeight < 85) {
+                    chatContentTextArea.style.height = "";
+                    chatContentTextArea.style.height = (chatContentTextArea.scrollHeight) + "px";
+                }
             });
+
+
     }
 
     closeModal = () => {
@@ -330,10 +360,11 @@ class Chat extends React.Component {
     }
 
     render() {
-        const { modalIsOpen, modalState, chatContent, messageListAdmin, messageListChatGPT } = this.state;
+        const { showChatNotice, modalIsOpen, modalState, chatContent, messageListAdmin, messageListChatGPT } = this.state;
         const { user } = this.props;
         return (
             <div className="chat-area">
+                <ChatNotice isShow={showChatNotice}></ChatNotice>
                 <img
                     className="chat-img" src={process.env.PUBLIC_URL + '/images/chat/messenger-chat-img.png'}
                     alt="not found"
@@ -351,6 +382,7 @@ class Chat extends React.Component {
                         <div className="row modal-chat-area">
                             <div className="col-3 modal-chat-area__left-col">
                                 <div className="left-col__chat-name1 left-col__chat-name--active" onClick={() => { this.openModal(1) }}>
+                                    <ChatNotice isShow={showChatNotice}></ChatNotice>
                                     <img src={process.env.PUBLIC_URL + '/images/logo/logoPTCustomer1.png'} alt="not fount" />
                                     <span>Admin</span>
                                 </div>

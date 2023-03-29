@@ -69,6 +69,7 @@
     padding: 8px;
     border-radius: 10px;
     cursor: pointer;
+    position: relative;
 }
 
 .left-col__chat-name1 {
@@ -98,6 +99,17 @@
 .left-col__chat-name--active:hover {
     color: #474af0;
     background-color: #e6eeff;
+}
+
+.left-col__chat-name-notice {
+    width: 14px;
+    height: 14px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    /* transform: translate(50%, -50%); */
 }
 
 /* .modal-chat-area__right-col {

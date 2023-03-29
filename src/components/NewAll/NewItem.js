@@ -82,7 +82,7 @@ class NewItem extends Component {
       <div className="col-lg-4 col-md-4 col-sm-6 mt-40">
         {/* single-product-wrap start */}
         <div className="single-product-wrapNew" onClick={(id) => this.getInfoNew(newItem.newsId)}>
-          <div className="fix-img-div product-image">
+          <div className="new-image">
             <Link to='' onClick={(id) => this.getInfoNew(newItem.newsId)} >
               {/* Hình ảnh tin tức */}
               <img className="fix-imgNew"

@@ -16,7 +16,6 @@ import ActiveAccount from "./components/LoginRegister/ActiveAccount";
 import OrderInfo from "./components/Order/OrderInfo";
 
 import Loading from "./components/Loading/Loading";
-import { startLoading, stopLoading } from "./components/Loading/setLoadingState";
 import './app.css'
 
 const cssPulseLoader = css`
@@ -40,6 +39,8 @@ class App extends Component {
           <Loading loadingCSS={cssPulseLoader}></Loading>
         </>
         <div className="wrap">
+          {/* <button onClick={() => { updateSeenStatus(6, 1, true) }}>true</button>
+          <button onClick={() => { updateSeenStatus(6, 1, false) }}>false</button> */}
           <Header></Header>
           {this.showContentMenus(routes)}
           <Footer></Footer>

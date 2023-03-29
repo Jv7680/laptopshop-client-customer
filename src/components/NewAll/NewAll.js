@@ -14,7 +14,7 @@ class NewAll extends Component {
     };
   }
 
-  componentWillMount = async () => {
+  componentDidMount = async () => {
     await this.fetch_reload_data();
   }
 
