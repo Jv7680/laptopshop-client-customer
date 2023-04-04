@@ -172,7 +172,7 @@
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
   color: #f7f8f8;
-  right: -20px;
+  right: -26px;
   transition: 0.4s right cubic-bezier(0.38, 0.6, 0.48, 1);
 }
 

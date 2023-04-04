@@ -64,10 +64,6 @@ export const actLoginGoogleRequest = (token, customerId, id, provider) => {
             dispatch(actLogin(token));
             dispatch(actFetchUser(data));
         }
-
-
-
-
     };
 }
 
@@ -82,11 +78,9 @@ export const actLogin = (token) => {
 export const actRegisterRequest = (user) => {
     console.log(user)
     return async () => {
-        startLoading();
         const res = await callApi('registration', 'POST', user);
         if (res && res.status === 200) {
             console.log(res)
-            doneLoading()
         }
     };
 }

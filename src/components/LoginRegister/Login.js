@@ -24,6 +24,13 @@ class Login extends Component {
     }
   }
 
+  componentDidMount = () => {
+    setTimeout(() => {
+      console.log('xxxsx');
+      window.scrollTo(0, 210);
+    }, 100);
+  }
+
   handleChange = event => {
     const name = event.target.name;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
@@ -69,10 +76,6 @@ class Login extends Component {
 
 
   render() {
-    setTimeout(() => {
-      console.log('xxxsx');
-      window.scrollTo(0, 210);
-    }, 100);
     const { username, password } = this.state;
     const { user } = this.props;
     if (user !== null) {

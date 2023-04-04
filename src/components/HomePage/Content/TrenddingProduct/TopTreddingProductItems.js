@@ -107,7 +107,7 @@ class TopTreddingProductItems extends Component {
               src={imageURL}
               alt="Li's Product"
               onClick={(id) => this.getInfoProduct(product.productId)}
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              style={{ width: '100%', height: '100%', objectFit: 'contain', cursor: "pointer" }} />
             {
               product.discount === 0 ?
                 (
@@ -157,9 +157,9 @@ class TopTreddingProductItems extends Component {
                     :
                     (
                       <div style={{ marginLeft: '15px' }}>
-                        <li className="add-cart active"><a onClick={() => this.addItemToCart(product)} >Thêm vào giỏ</a></li>
-                        <li><a onClick={(id) => this.getInfoProduct(product.productId)} title="chi tiểt" className="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i className="fa fa-eye" /></a></li>
-                        {/* <li><Link to="#" onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" ><i className="fa fa-heart-o" /></Link></li> */}
+                        <li className="add-cart active"><a style={{ cursor: "pointer" }} onClick={() => this.addItemToCart(product)} >Thêm vào giỏ</a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={(id) => this.getInfoProduct(product.productId)} title="chi tiểt" className="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i className="fa fa-eye" /></a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" ><i className="fa fa-heart-o" /></a></li>
                       </div>
                     )
 

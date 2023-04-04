@@ -121,7 +121,7 @@ export const actUpdateCartRequest = (item) => {
 
     console.log("dữ liệu chuẩn bị gửi đi", dataguidi)
     return async dispatch => {
-        const res = await callApi(`cart/update`, 'PUT', dataguidi, token);
+        const res = await callApi(`cart/update`, 'PUT', dataguidi, token, false);
         console.log('actUpdateCartRequest res: ', res);
         if (res && res.status === 200) {
             //Cập nhật lại state cart trong redux

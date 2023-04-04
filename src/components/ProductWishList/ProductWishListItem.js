@@ -31,7 +31,7 @@ class ProductWishListItem extends Component {
         <td className="li-product-remove"><Link to='' onClick={() => this.handleRemoveItem(wishlistItem.wishlistId, value)}>
           <i style={{ fontSize: 20 }} className="far fa-trash-alt" /></Link></td>
         <td className="li-product-thumbnail d-flex justify-content-center"><a href="/">
-          <Link to={`/products/${product.productId}`} className="fix-cart"> <img className="fix-img" src={product.productImageSet[0].image} alt="Li's Product" /></Link>
+          <Link to={`/products/${product.productId}`} className="fix-cart"> <img className="fix-img" src={product.image} alt="Li's Product" /></Link>
         </a></td>
         <td className="li-product-name"><Link className="text-dark" to={`/products/${product.productId}`}> {product.productName} </Link></td>
         <td className="product-subtotal"><span className="amount">{formatNumber(product.priceAfterDiscount)}</span></td>

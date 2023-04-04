@@ -6,7 +6,8 @@ import { connect } from 'react-redux'
 import { startLoading, doneLoading } from '../../utils/loading'
 import { withRouter } from 'react-router-dom';
 import validateLoginRegister from '../../utils/validations/validateLoginRegister';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import store from '../..';
 
 toast.configure()
 
@@ -22,6 +23,13 @@ class Register extends Component {
       phonenumber: '',
       address: ''
     }
+  }
+
+  componentDidMount = () => {
+    setTimeout(() => {
+      console.log('xxxsx');
+      window.scrollTo(0, 210);
+    }, 100);
   }
 
   handleChange = (event) => {
@@ -56,7 +64,8 @@ class Register extends Component {
 
     console.log(user);
 
-    await this.props.registerRequest(user);
+    // await this.props.registerRequest(user);
+    await store.dispatch(actRegisterRequest(user));
     // this.setState({
     //   firstname: '',
     //   lastname: '',
@@ -73,10 +82,6 @@ class Register extends Component {
   }
 
   render() {
-    setTimeout(() => {
-      console.log('xxxsx');
-      window.scrollTo(0, 210);
-    }, 100);
     const { firstname, lastname, gmail, phonenumber, address, password, repassword } = this.state;
     return (
       <div className="col-sm-12 col-md-12 col-lg-6 col-xs-12">
@@ -147,7 +152,7 @@ class Register extends Component {
                   placeholder="Nhập số điện thoại (10 số) " />
               </div>
               <div className="col-md-12 mb-20">
-                <label>Địa chỉ</label>
+                <label>Địa chỉ*</label>
                 <input
                   value={address}
                   onChange={this.handleChange}

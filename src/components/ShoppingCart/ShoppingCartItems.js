@@ -6,10 +6,27 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify';
 import { withRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { getProductFirstImageURL } from '../../firebase/CRUDImage';
 import './style.css'
 toast.configure()
 
 class ShoppingCartItems extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageURL: process.env.PUBLIC_URL + '/images/logo/logoPTCustomer.png',
+    }
+  }
+  componentDidMount = async () => {
+    const { item } = this.props;
+    let imageURL = await getProductFirstImageURL(item.product.productId);
+    console.log("imageURLxxxxxxx", imageURL);
+    if (imageURL != "") {
+      this.setState({
+        imageURL,
+      });
+    }
+  }
 
   upItem = (item) => {
     if (item.cartProductQuantity >= 5) {
@@ -55,6 +72,7 @@ class ShoppingCartItems extends Component {
 
   render() {
     const { item } = this.props;
+    const { imageURL } = this.state;
 
     return (
       <tr>
@@ -65,7 +83,7 @@ class ShoppingCartItems extends Component {
         </td>
         <td className="li-product-thumbnail d-flex justify-content-center">
           <Link to={`/products/${item.product.productId}`} >
-            <div className="fix-cart"> <img className="fix-img" src={item.product.image} alt="Li's Product" /></div>
+            <div className="fix-cart"> <img className="fix-img" src={imageURL} alt="Li's Product" /></div>
           </Link></td>
         <td className="li-product-name">
           <Link className="text-dark" to={`/products/${item.product.productId}`}>{item.product.productName}</Link></td>
