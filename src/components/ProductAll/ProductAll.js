@@ -6,6 +6,8 @@ import Paginator from 'react-js-paginator';
 import FilterProduct from "./FilterProduct";
 import SortProduct from "./SortProduct";
 import ProductList from "./ProductList";
+import { withRouter } from 'react-router-dom';
+
 
 class ProductAll extends Component {
   constructor(props) {
@@ -91,6 +93,10 @@ class ProductAll extends Component {
 
   }
 
+  componentWillUnmount = () => {
+    console.log("componentWillUnmount");
+  }
+
   updateFilter = (newFilter) => {
     this.setState({
       filter: newFilter,
@@ -105,21 +111,26 @@ class ProductAll extends Component {
 
   render() {
     const { total, filter, sort } = this.state;
+    let { keySearch } = this.props; console.log("keySearch", keySearch);
 
     return (
-      <div className="content-wraper pt-60 pb-60">
+      <div className="content-wraper pb-60">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
               {/* Begin Li's Banner Area */}
-              <div className="single-banner shop-page-banner">
-                <a href="/">
-                  <img
-                    src={process.env.PUBLIC_URL + '/images/bannerproductpage.png'}
-                    alt="Li's Static Banner"
-                  />
-                </a>
-              </div>
+              {
+                this.props.history.location.pathname === "/products" && (
+                  <div className="single-banner shop-page-banner  pt-60">
+                    <a href="/">
+                      <img
+                        src={process.env.PUBLIC_URL + '/images/bannerproductpage.png'}
+                        alt="Li's Static Banner"
+                      />
+                    </a>
+                  </div>
+                )
+              }
               {/* Li's Banner Area End Here *presentation/} */}
 
               {/* row chứa phần filter và list sản phẩm */}
@@ -137,7 +148,7 @@ class ProductAll extends Component {
                       role="tabpanel"
                     >
                       <div className="product-area shop-product-area">
-                        <ProductList filter={filter} sort={sort}></ProductList>
+                        <ProductList filter={filter} sort={sort} keySearch={keySearch}></ProductList>
                       </div>
                     </div>
                   </div>
@@ -169,4 +180,4 @@ class ProductAll extends Component {
 // };
 
 // export default connect(mapStateToProps, mapDispatchToProps)(ProductAll);
-export default (ProductAll);
+export default withRouter(ProductAll);

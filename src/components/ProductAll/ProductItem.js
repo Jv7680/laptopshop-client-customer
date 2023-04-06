@@ -26,7 +26,7 @@ class ProductItem extends Component {
       offset: 0,
       quantity: 1,
       productID: this.props.product.productId,
-      imageURL: "",
+      imageURL: process.env.PUBLIC_URL + '/images/logo/logoPTCustomer.png',
     }
   }
 
@@ -112,7 +112,7 @@ class ProductItem extends Component {
           <div className="fix-img-div-for-item product-image">
             <img
               className={`fix-img image-product-${product.productId}`}
-              src=''
+              src={imageURL}
               alt={'/images/logo/logoPTCustomer.png'}
               onClick={(id) => this.getInfoProduct(product.productId)}
               style={{ cursor: "pointer" }}

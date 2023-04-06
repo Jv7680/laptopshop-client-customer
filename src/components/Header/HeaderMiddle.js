@@ -131,12 +131,13 @@ class HeaderMiddle extends Component {
       // let res = await this.props.searchProduct(textSearch);
       // console.log('searchProduct res: ', res);
 
-      let res = await actGetProductOfKeyRequest(textSearch)();
-      console.log('searchProduct res: ', res);
-      //doneLoading();
-      if (res) {
-        this.props.history.push(`/search/${textSearch}`);
-      }
+      // let res = await actGetProductOfKeyRequest(textSearch)();
+      // console.log('searchProduct res: ', res);
+      // //doneLoading();
+      // if (res) {
+      //   this.props.history.push(`/search/${textSearch}`);
+      // }
+      this.props.history.push(`/search/${textSearch}`);
 
 
     }

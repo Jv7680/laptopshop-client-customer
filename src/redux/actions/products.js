@@ -56,7 +56,7 @@ export const actGetProduct = (product) => {
 // lấy sản phẩm theo từ khóa
 export const actGetProductOfKeyRequest = (key, page) => {
     const newPage = page === null || page === undefined ? 1 : page
-    const newKey = (key === undefined || key === '' || key === null) ? 'latop' : key
+    const newKey = (key === undefined || key === '' || key === null) ? 'laptop' : key
     console.log(newPage, newKey)
     return dispatch => {
         // store.dispatch(actShowLoading());
@@ -66,7 +66,7 @@ export const actGetProductOfKeyRequest = (key, page) => {
             callApi(`product/search?page=${newPage}&size=12&keyword=${newKey}`, 'GET', null, token)
                 .then(res => {
                     if (res && res.status === 200) {
-                        localStorage.setItem("_keyword", newKey)
+                        localStorage.setItem("_keySearch", newKey)
                         console.log("actGetProductOfKeyRequest res", res)
                         const newKeyPage = { key: newKey, totalPage: res.data.totalPage }
                         store.dispatch(actFetchProducts(res.data.listProducts));

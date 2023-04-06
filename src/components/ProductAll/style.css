@@ -160,3 +160,16 @@
   cursor: default;
   /* user-select: none; */
 }
+
+.pagination-box .paginator .pageBox {
+  margin: 0 4px 0 4px;
+}
+
+.pagination-box .paginator .pageBox:hover {
+  background-color: #d96161;
+}
+
+.pagination-box .paginator .pageBox,
+.pagination-box .paginator .pageBox button {
+  cursor: pointer;
+}
