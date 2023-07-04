@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LinkHere from '../components/LinkHere/LinkHere';
 import OrderInfo from '../components/Order/OrderInfo';
+import PaypalCheckoutButton from '../components/CheckOut/PaypalCheckoutButton';
 
 export default class OrderInfoPage extends Component {
     render() {
@@ -12,6 +13,7 @@ export default class OrderInfoPage extends Component {
                     <div className="container">
                         <div className="row justify-content-center">
                             <OrderInfo></OrderInfo>
+                            {/* <PaypalCheckoutButton></PaypalCheckoutButton> */}
                         </div>
                     </div>
                 </div>

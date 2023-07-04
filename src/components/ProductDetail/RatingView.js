@@ -76,16 +76,24 @@ class RatingView extends Component {
       contents: cmtContent,
       rate: cmtRating,
     }
-    //gọi api
-    let res = callApi('reviews', 'POST', body, token)
-      .then(result => {
-        toast.success('Đánh giá thành công.');
-        console.log('handleSubmitCMT result', result);
 
-        //cập nhật lại sản phẩm hiện tại
-        store.dispatch(actGetProductRequest(idProduct));
-      });
+    // khúc này làm tạm, chờ sửa db
+    if (parseInt(idOrder)) {
+      //gọi api
+      let res = callApi('reviews', 'POST', body, token)
+        .then(result => {
+          toast.success('Đánh giá thành công.');
+          console.log('handleSubmitCMT result', result);
+
+          //cập nhật lại sản phẩm hiện tại
+          store.dispatch(actGetProductRequest(idProduct));
+        });
+    }
+    else {
+      toast.error(`Order id ${parseInt(idOrder)}`);
+    }
   }
+
 
   handleOnclickRating = (startRating) => {
     //1 sao

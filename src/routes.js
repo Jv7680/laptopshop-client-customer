@@ -83,6 +83,13 @@ const routes = [
     exact: false,
     main: (match) => < OrderInfoPage match={match} />
   },
+
+  {
+    path: '/orderinfo/paypalCheckout',
+    exact: false,
+    main: (match) => < OrderInfoPage match={match} />
+  },
+
   {
     path: '/forgot-password',
     exact: false,

@@ -16,7 +16,7 @@ import { result } from "lodash";
 import Swal from "sweetalert2";
 import { withRouter } from 'react-router-dom';
 import { getProductListImageURL, getProductListImage360URL } from "../../firebase/CRUDImage";
-
+import { actAddWishListRequest, actFetchWishListRequest } from "../../redux/actions/wishlist";
 import Image360 from "./Image360";
 import ProductInfor from "./ProductInfor";
 import Slider from "react-slick";
@@ -28,6 +28,7 @@ toast.configure();
 
 let token;
 let id;
+let currentId;
 const customStyles = {
   content: {
     top: "50%",
@@ -72,7 +73,7 @@ class ProductViewDetail extends Component {
   }
 
   componentDidMount = async () => {
-
+    currentId = this.props.id;
     await this.props.get_product(this.props.id);
 
     let listImage = await getProductListImageURL(this.props.id);
@@ -84,7 +85,20 @@ class ProductViewDetail extends Component {
     });
   }
 
-  componentDidUpdate = () => {
+  componentDidUpdate = async () => {
+    if (this.props.id !== currentId) {
+      currentId = this.props.id;
+      await this.props.get_product(this.props.id);
+
+      let listImage = await getProductListImageURL(this.props.id);
+      // let listImage360 = await getProductListImage360URL(this.props.id);
+      this.getListImage360URL();
+      this.setState({
+        listImageURL: listImage.images,
+        // listImage360URL: listImage360.images360,
+      });
+    }
+
     let { modalState } = this.state;
     setTimeout(() => {
       let modalHeader1 = document.getElementsByClassName('modal-image-header1')[0];
@@ -200,14 +214,6 @@ class ProductViewDetail extends Component {
     })
   }
 
-  handleChange = event => {
-    let name = event.target.name;
-    let value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
-    this.setState({
-      [name]: value
-    });
-  };
-
   addItemToCart = product => {
     const { quantity } = this.state;
 
@@ -244,8 +250,41 @@ class ProductViewDetail extends Component {
     this.setState({ modalIsOpen: false });
   }
 
+  addItemToFavorite = async (productId) => {
+    id = parseInt(localStorage.getItem("_id"));
+
+    token = localStorage.getItem("_auth");
+    if (!token) {
+      Swal.fire({
+        returnFocus: false,
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Bạn cần đăng nhập để thực hiện chức năng này!',
+      })
+      this.props.history.push(`/login`);
+      return;
+    }
+
+    if (!id) {
+      return toast.error('vui lòng đăng nhập !')
+    }
+
+    let { wishlist } = this.props;
+    let found = Array.from(wishlist).find(item => item.product.productId === productId);
+    // delete
+    if (found) {
+      let token = localStorage.getItem('_auth');
+      await callApi(`wishlist/delete/${found.wishlistId}`, 'DELETE', undefined, token);
+      this.props.fetch_wishlist(id);
+      toast.success('Đã xóa khỏi mục ưa thích')
+    }
+    else {
+      this.props.addWishList(id, productId);
+    }
+  }
+
   render() {
-    const { product, user } = this.props;
+    const { product, user, wishlist } = this.props;
     const { quantity, redirectYourLogin, cmtContent, cmtRating, ratingState, checkCommented, listImageURL, listImage360URL } = this.state;
     const { modalIsOpen, modalState } = this.state;
     let listProductInfor;
@@ -318,7 +357,7 @@ class ProductViewDetail extends Component {
                             :
                             (
                               <div className="slider-state3">
-                                <ProductInfor listImage360URL={listImage360URL}></ProductInfor>
+                                <ProductInfor product={product}></ProductInfor>
                               </div>
                             )
                         }
@@ -410,14 +449,20 @@ class ProductViewDetail extends Component {
                                       <p className="new-price new-price-2" style={{ color: 'black', textDecoration: "none" }}>
                                         Chỉ còn: {(product.unitprice * ((100 - product.discount) / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}
                                       </p>
+                                      <p>
+                                        <span style={{ color: 'black', textDecoration: "none", fontStyle: "italic" }}>Đã bán: {product.soldQuantity || 0}</span>
+                                      </p>
                                     </>
                                   )
                                   :
                                   (
                                     <>
-                                      <span className="new-price new-price-2" style={{ color: 'black', textDecoration: "none" }}>
+                                      <p className="new-price new-price-2" style={{ color: 'black', textDecoration: "none" }}>
                                         {product && product.unitprice ? product.unitprice.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : null}
-                                      </span>
+                                      </p>
+                                      <p>
+                                        <span style={{ color: 'black', textDecoration: "none", fontStyle: "italic" }}>Đã bán: {product.soldQuantity || 0}</span>
+                                      </p>
                                     </>
                                   )
                               }
@@ -466,6 +511,9 @@ class ProductViewDetail extends Component {
                               Thêm vào giỏ
                               <i className="fa fa-shopping-cart"></i>
                             </span>
+                            <span style={{ cursor: "pointer", fontSize: 24, marginLeft: 12, position: "relative", top: -14 }} onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" >
+                              <i className="fa fa-heart-o" style={{ color: Array.from(wishlist).find(item => item.product.productId === product.productId) ? "#f13961" : "unset" }} />
+                            </span>
                           </div>
                         </form>
                       </div>
@@ -493,27 +541,27 @@ class ProductViewDetail extends Component {
               </div>
               <div className="row product-configuration-content product-configuration-content--grey">
                 <div className="col-4 product-configuration-content__title">CPU:</div>
-                <div className="col product-configuration-content__content">Nội dung</div>
+                <div className="col product-configuration-content__content">{product.cpu || "Đang cập nhật"}</div>
               </div>
               <div className="row product-configuration-content">
                 <div className="col-4 product-configuration-content__title">RAM:</div>
-                <div className="col product-configuration-content__content">Nội dung</div>
+                <div className="col product-configuration-content__content">{product.ram || "Đang cập nhật"}</div>
               </div>
               <div className="row product-configuration-content product-configuration-content--grey">
                 <div className="col-4 product-configuration-content__title">Ổ cứng:</div>
-                <div className="col product-configuration-content__content">Nội dung</div>
+                <div className="col product-configuration-content__content">{product.storagecapacity || "Đang cập nhật"}</div>
               </div>
               <div className="row product-configuration-content">
                 <div className="col-4 product-configuration-content__title">Màn hình:</div>
-                <div className="col product-configuration-content__content">Nội dung</div>
+                <div className="col product-configuration-content__content">{product.screensize || "Đang cập nhật"}</div>
               </div>
               <div className="row product-configuration-content product-configuration-content--grey">
                 <div className="col-4 product-configuration-content__title">Hệ điều hành:</div>
-                <div className="col product-configuration-content__content">Nội dung</div>
+                <div className="col product-configuration-content__content">{product.operatingsystem || "Đang cập nhật"}</div>
               </div>
               <div className="row product-configuration-content">
                 <div className="col-4 product-configuration-content__title">Khối lượng:</div>
-                <div className="col product-configuration-content__content">Nội dung</div>
+                <div className="col product-configuration-content__content">{product.weight || "Đang cập nhật"}</div>
               </div>
               <div className="row product-configuration-content">
                 <button className="product-configuration-content__btn" type="button" onClick={() => { this.openModal(3) }}><i className="fa-solid fa-plus"></i> Xem thêm</button>
@@ -603,7 +651,8 @@ class ProductViewDetail extends Component {
 const mapStateToProps = state => {
   return {
     product: state.product,
-    user: state.auth
+    user: state.auth,
+    wishlist: state.wishlist,
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -613,8 +662,13 @@ const mapDispatchToProps = dispatch => {
     },
     addCart: (idCustomer, product, quantity, token) => {
       dispatch(actAddCartRequest(idCustomer, product, quantity, token));
+    },
+    addWishList: (id, idProduct) => {
+      dispatch(actAddWishListRequest(id, idProduct));
+    },
+    fetch_wishlist: (id) => {
+      dispatch(actFetchWishListRequest(id))
     }
-
   }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductViewDetail));

@@ -65,20 +65,15 @@ class Register extends Component {
     console.log(user);
 
     // await this.props.registerRequest(user);
-    await store.dispatch(actRegisterRequest(user));
-    // this.setState({
-    //   firstname: '',
-    //   lastname: '',
-    //   gmail: '',
-    //   password: '',
-    //   repassword: '',
-    //   phonenumber: '',
-    //   address: ''
-    // })
-    localStorage.setItem('username', user.gmail);
-    localStorage.setItem('password', user.password);
+    // const res = await store.dispatch(actRegisterRequest(user));
+    const res = await actRegisterRequest(user)();
+    console.log("res register", res);
+    if (res && res.status === 200) {
+      localStorage.setItem('username', user.gmail);
+      localStorage.setItem('password', user.password);
 
-    this.props.history.push(`/activeaccount`);
+      this.props.history.push(`/activeaccount`);
+    }
   }
 
   render() {

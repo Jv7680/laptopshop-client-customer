@@ -126,3 +126,94 @@ button.li-btn:hover {
 .cart-item-count:hover {
     background: #5658dd;
 }
+
+.wishlist-items {
+    position: absolute;
+    top: calc(100% + 16px);
+    right: 10px;
+    width: 450px;
+    padding: 8px 0 8px 0;
+    background-color: #ffffff;
+    z-index: 19;
+    box-sizing: border-box;
+    border: 1px solid #7779f7;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform-origin: 94% 0;
+    transition: transform 0.2s ease-in-out;
+    -webkit-transition: transform 0.2s ease-in-out;
+    -moz-transition: transform 0.2s ease-in-out;
+    -ms-transition: transform 0.2s ease-in-out;
+    -o-transition: transform 0.2s ease-in-out;
+}
+
+.wishlist-items--show {
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+}
+
+.wishlist-items--active {
+    border-color: rgb(71 74 240) !important;
+    background-color: #e6eeff !important;
+}
+
+.wishlist-items:hover {
+    cursor: initial;
+}
+
+.wishlist-item {
+    display: flex;
+    width: 100%;
+    height: 50px;
+}
+
+.wishlist-item img {
+    object-fit: contain;
+    padding: 4px;
+    margin-left: 6px;
+}
+
+.wishlist-item img,
+.wishlist-item .wishlist-item__name,
+.wishlist-item .wishlist-item__unlike {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wishlist-item .wishlist-item__unlike i {
+    color: #f13961;
+}
+
+.wishlist-item .wishlist-item__unlike:hover i {
+    color: #ff0037;
+}
+
+.dropdow-arrow {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    z-index: 20;
+    border: 1px solid #7779f7;
+    border-bottom: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+    background-color: #ffffff;
+    transform: translateY(-50%) rotateZ(45deg);
+    -webkit-transform: translateY(-50%) rotateZ(45deg);
+    -moz-transform: translateY(-50%) rotateZ(45deg);
+    -ms-transform: translateY(-50%) rotateZ(45deg);
+    -o-transform: translateY(-50%) rotateZ(45deg);
+}

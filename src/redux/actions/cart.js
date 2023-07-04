@@ -75,7 +75,6 @@ export const actFetchCart = (items) => {
         type: Types.FETCH_CART,
         items
     }
-
 }
 
 // xóa giỏ hàng
@@ -147,7 +146,7 @@ export const actClearRequest = () => {
 
     };
 }
-export const actClearCart = (clear) => {
+export const actClearCart = () => {
     return {
         type: Types.CLEAR_CART
     }

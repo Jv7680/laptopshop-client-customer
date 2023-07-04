@@ -10,9 +10,8 @@ import Modal from "react-modal";
 
 
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-const MySwal = withReactContent(Swal)
 let id;
+
 const customStyles = {
     content: {
         top: "50%",
@@ -21,7 +20,8 @@ const customStyles = {
         bottom: "auto",
         marginRight: "-50%",
         transform: "translate(-50%, -50%)",
-        width: "1000px"
+        width: "1000px",
+        height: "90vh",
     }
 };
 
@@ -49,7 +49,7 @@ class OrderStatus1 extends Component {
             })
     }
     handleRemove = (id) => {
-        MySwal.fire({
+        Swal.fire({
             title: 'Xóa đơn hàng?',
             text: `Bạn chắc chắn xóa đơn hàng ${id}!`,
             icon: 'warning',

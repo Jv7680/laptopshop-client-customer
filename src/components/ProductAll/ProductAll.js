@@ -93,9 +93,9 @@ class ProductAll extends Component {
 
   }
 
-  componentWillUnmount = () => {
-    console.log("componentWillUnmount");
-  }
+  // componentWillUnmount = () => {
+  //   console.log("componentWillUnmount");
+  // }
 
   updateFilter = (newFilter) => {
     this.setState({
@@ -164,20 +164,4 @@ class ProductAll extends Component {
     );
   }
 }
-
-// const mapStateToProps = state => {
-//   return {
-//     products: state.products,
-//   };
-// };
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     fetch_products: (page) => {
-//       return dispatch(actFetchProductsRequest(page));
-//     }
-//   };
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(ProductAll);
 export default withRouter(ProductAll);

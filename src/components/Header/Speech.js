@@ -20,7 +20,7 @@ export default function Speech(props) {
 
   useEffect(() => {
     console.log('vào useEffect', props);
-    // start listening, khi start render lạ 2 lần, lần thứ 2 ms chính thức đặt listening thành true
+    // start listening, khi start render lại 2 lần, lần thứ 2 ms chính thức đặt listening thành true
     SpeechRecognition.startListening();
 
     timeOutID = setTimeout(() => {
@@ -34,6 +34,7 @@ export default function Speech(props) {
       countSetTextSearch = 0;
       SpeechRecognition.abortListening();
       clearTimeout(timeOutID);
+      document.getElementsByTagName('body')[0].classList.remove('prevent-scroll-body');
     }
   }, []);
 

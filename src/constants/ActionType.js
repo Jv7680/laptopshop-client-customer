@@ -1,5 +1,7 @@
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS';
 
+export const FETCH_FILTER_DATA = 'FETCH_FILTER_DATA';
+
 export const FETCH_NEWS = 'FETCH_NEWS';
 export const FETCH_NEW = 'FETCH_NEW';
 export const SEARCH_NEWS = 'SEARCH_NEWS';

@@ -13,6 +13,8 @@ import BeautyStars from 'beauty-stars';
 import { getProductFirstImageURL } from '../../../../firebase/CRUDImage';
 import './style.css'
 import Swal from 'sweetalert2';
+import callApi from '../../../../utils/apiCaller';
+import { actFetchWishListRequest } from '../../../../redux/actions/wishlist';
 toast.configure()
 let token, id;
 id = parseInt(localStorage.getItem("_id"));
@@ -85,18 +87,42 @@ class TopTreddingProductItems extends Component {
     }
 
   };
-  addItemToFavorite = (productId) => {
-    startLoading()
+  addItemToFavorite = async (productId) => {
+    id = parseInt(localStorage.getItem("_id"));
+
+    token = localStorage.getItem("_auth");
+    if (!token) {
+      Swal.fire({
+        returnFocus: false,
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Bạn cần đăng nhập để thực hiện chức năng này!',
+      })
+      this.props.history.push(`/login`);
+      return;
+    }
+
     if (!id) {
       return toast.error('vui lòng đăng nhập !')
     }
-    this.props.addWishList(id, productId);
-    doneLoading();
+
+    let { wishlist } = this.props;
+    let found = Array.from(wishlist).find(item => item.product.productId === productId);
+    // delete
+    if (found) {
+      let token = localStorage.getItem('_auth');
+      await callApi(`wishlist/delete/${found.wishlistId}`, 'DELETE', undefined, token);
+      this.props.fetch_wishlist(id);
+      toast.success('Đã xóa khỏi mục ưa thích')
+    }
+    else {
+      this.props.addWishList(id, productId);
+    }
   }
 
 
   render() {
-    const { product } = this.props;
+    const { product, wishlist } = this.props;
     const { imageURL } = this.state;
 
     return (
@@ -159,7 +185,7 @@ class TopTreddingProductItems extends Component {
                       <div style={{ marginLeft: '15px' }}>
                         <li className="add-cart active"><a style={{ cursor: "pointer" }} onClick={() => this.addItemToCart(product)} >Thêm vào giỏ</a></li>
                         <li><a style={{ cursor: "pointer" }} onClick={(id) => this.getInfoProduct(product.productId)} title="chi tiểt" className="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i className="fa fa-eye" /></a></li>
-                        <li><a style={{ cursor: "pointer" }} onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" ><i className="fa fa-heart-o" /></a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" ><i className="fa fa-heart-o" style={{ color: Array.from(wishlist).find(item => item.product.productId === product.productId) ? "#f13961" : "unset" }} /></a></li>
                       </div>
                     )
 
@@ -175,7 +201,8 @@ class TopTreddingProductItems extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    getProduct: state.product
+    getProduct: state.product,
+    wishlist: state.wishlist,
   }
 }
 
@@ -189,6 +216,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     addWishList: (id, idProduct) => {
       dispatch(actAddWishListRequest(id, idProduct));
+    },
+    fetch_wishlist: (id) => {
+      dispatch(actFetchWishListRequest(id))
     }
   }
 }

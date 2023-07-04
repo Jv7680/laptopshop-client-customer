@@ -9,9 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { withRouter } from 'react-router-dom';
 import callApi from '../../utils/apiCaller';
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-
-const MySwal = withReactContent(Swal)
 
 class ForgotPassword extends Component {
     constructor(props) {
@@ -66,10 +63,10 @@ class ForgotPassword extends Component {
 
 
         startLoading();
-        const res = await callApi(`auth/reset/${code}`, 'GET', null);
+        const res = await callApi(`auth/reset/${code}`, 'GET', null, null, true);
         doneLoading();
         if (res && res.status === 200) {
-            MySwal.fire({
+            Swal.fire({
                 icon: 'success',
                 title: 'Mã Hợp Lệ',
                 text: 'Vui lòng nhập mật khẩu mới!'

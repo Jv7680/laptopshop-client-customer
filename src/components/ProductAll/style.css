@@ -21,7 +21,7 @@
 
 .filter-area {
   opacity: 0;
-  height: fit-content;
+  max-height: 0;
   margin-right: -210px;
   padding-bottom: 8px;
   transform: translateX(-210px);
@@ -36,6 +36,8 @@
   margin-right: 0;
   transform: translateX(0px);
   opacity: 1;
+  max-height: 2000px;
+  height: fit-content;
 }
 
 .sort-area {
@@ -172,4 +174,31 @@
 .pagination-box .paginator .pageBox,
 .pagination-box .paginator .pageBox button {
   cursor: pointer;
+}
+
+.btnFilterPush,
+.btnFilterReset {
+  outline: none;
+  border: unset;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.1s ease-in;
+}
+
+.btnFilterPush {
+  margin: 4px 0 3px 0;
+}
+
+.btnFilterPush:hover {
+  background-color: #5e60eb;
+  color: #FFFFFF;
+}
+
+.btnFilterReset {
+  margin: 3px 0 10px 0;
+}
+
+.btnFilterReset:hover {
+  background-color: #d45050;
+  color: #FFFFFF;
 }

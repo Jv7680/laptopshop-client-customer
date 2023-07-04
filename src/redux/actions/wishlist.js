@@ -2,19 +2,17 @@ import * as Types from '../../constants/ActionType';
 import callApi from '../../utils/apiCaller';
 import { toast } from 'react-toastify';
 
-
-
-
 export const actFetchWishListRequest = (id) => {
-  const idnew = parseInt(id)
+  const userId = parseInt(id)
   return async dispatch => {
-    const res = await callApi(`wishlist?customerId=${idnew}`, 'GET');
-
+    let token = localStorage.getItem('_auth');
+    const res = await callApi(`wishlist/wishlist/${userId}`, 'GET', undefined, token);
+    console.log("res sđsds", res);
     if (res && res.status === 200) {
 
       dispatch(actFetchWishList(res.data));
     }
-    if(res && res.status === 204){
+    if (res && res.status === 204) {
       dispatch(actFetchWishList([]));
     }
   };
@@ -28,14 +26,17 @@ export const actFetchWishList = (wishlist) => {
 }
 
 export const actAddWishListRequest = (customerId, productId) => {
-  let data = {customerId,productId}
-  console.log("haha",data)
+  let data = {
+    accountId: customerId,
+    productId
+  }
+  console.log("haha", data)
   return async dispatch => {
-    const res = await callApi('wishlist', 'POST',data);
+    let token = localStorage.getItem('_auth');
+    const res = await callApi('wishlist/create', 'POST', data, token);
     if (res && res.status === 200) {
       dispatch(actFetchWishListRequest(customerId))
-      toast.success('thêm yêu thích thành công')
-
+      toast.success('Đã thêm vào mục ưa thích')
     }
   };
 }

@@ -9,15 +9,6 @@ let objSent = {
 // write chat into database
 export async function writeUserChatData(userId, messageItem) {
     let newChatIndex = 0;
-    // await onValue(ref(realtimeDB, 'userChat/' + `${userId}`), (snapshot) => {
-    //     // If exist data
-    //     if (snapshot.size != 0) {
-    //         newChatIndex = snapshot.val().length;
-    //         console.log('newChatIndex', newChatIndex);
-    //         console.log('snap', snapshot);
-    //         console.log('snapshot.val()', snapshot.val());
-    //     }
-    // });
 
     // get new index
     const dbRef = ref(realtimeDB);

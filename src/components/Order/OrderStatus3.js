@@ -18,7 +18,8 @@ const customStyles = {
         bottom: "auto",
         marginRight: "-50%",
         transform: "translate(-50%, -50%)",
-        width: "1000px"
+        width: "1000px",
+        height: "90vh",
     }
 };
 
@@ -46,7 +47,7 @@ class OrderStatus3 extends Component {
             })
     }
     handleRemove = (id) => {
-        MySwal.fire({
+        Swal.fire({
             title: 'Xóa đơn hàng?',
             text: `Bạn chắc chắn xóa đơn hàng ${id}!`,
             icon: 'warning',

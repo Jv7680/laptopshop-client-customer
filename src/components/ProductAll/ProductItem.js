@@ -1,19 +1,16 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom';
-import { Link, Redirect } from 'react-router-dom'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { actGetProductRequest } from '../../redux/actions/products';
-import { actAddWishListRequest } from '../../redux/actions/wishlist'
-import { actAddCartRequest } from "../../redux/actions/cart";
-import { startLoading, doneLoading } from '../../utils/loading'
-import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css';
-import BeautyStars from 'beauty-stars';
-import './style.css'
-import { set } from 'nprogress';
 import Swal from "sweetalert2";
 import { getProductFirstImageURL } from '../../firebase/CRUDImage';
-import { async } from '@firebase/util';
+import { actAddCartRequest } from "../../redux/actions/cart";
+import { actGetProductRequest } from '../../redux/actions/products';
+import { actAddWishListRequest, actFetchWishListRequest } from '../../redux/actions/wishlist';
+import { doneLoading, startLoading } from '../../utils/loading';
+import callApi from '../../utils/apiCaller';
+import './style.css';
 toast.configure()
 let token, id;
 id = parseInt(localStorage.getItem("_id"));
@@ -86,17 +83,41 @@ class ProductItem extends Component {
     }
 
   };
-  addItemToFavorite = (productId) => {
-    startLoading()
+  addItemToFavorite = async (productId) => {
+    id = parseInt(localStorage.getItem("_id"));
+
+    token = localStorage.getItem("_auth");
+    if (!token) {
+      Swal.fire({
+        returnFocus: false,
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Bạn cần đăng nhập để thực hiện chức năng này!',
+      })
+      this.props.history.push(`/login`);
+      return;
+    }
+
     if (!id) {
       return toast.error('vui lòng đăng nhập !')
     }
-    this.props.addWishList(id, productId);
-    doneLoading();
+
+    let { wishlist } = this.props;
+    let found = Array.from(wishlist).find(item => item.product.productId === productId);
+    // delete
+    if (found) {
+      let token = localStorage.getItem('_auth');
+      await callApi(`wishlist/delete/${found.wishlistId}`, 'DELETE', undefined, token);
+      this.props.fetch_wishlist(id);
+      toast.success('Đã xóa khỏi mục ưa thích')
+    }
+    else {
+      this.props.addWishList(id, productId);
+    }
   }
 
   render() {
-    const { product } = this.props;
+    const { product, wishlist } = this.props;
     const { quantity, redirectYourLogin, imageURL } = this.state;
 
     console.log('vào render');
@@ -140,15 +161,20 @@ class ProductItem extends Component {
                       <span className="new-price new-price-2" style={{ color: 'black', textDecoration: "line-through", userSelect: "none" }}>
                         {product.unitprice.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}  <span>&emsp;-{product.discount}%</span><br />
                         <span>Chỉ còn: {(product.unitprice * ((100 - product.discount) / 100)).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</span>
-                      </span>
-
+                      </span><br />
+                      <span style={{ color: 'black', textDecoration: "none", fontStyle: "italic" }}>Đã bán: {product.soldQuantity || 0}</span>
                     </>
                   )
                   :
                   (
                     <>
                       <span className="new-price new-price-2" style={{ color: 'black', textDecoration: "none" }}>
-                        {product && product.unitprice ? product.unitprice.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : null}<br />&emsp;
+                        {product && product.unitprice ? product.unitprice.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) : null}
+                        <br />
+                        {/* &emsp; */}
+                        <span style={{ color: 'black', textDecoration: "none", fontStyle: "italic" }}>Đã bán: {product.soldQuantity || 0}</span>
+                        <br />
+                        &emsp;
                       </span>
                     </>
                   )
@@ -195,7 +221,7 @@ class ProductItem extends Component {
                       <div>
                         <li className="add-cart active"><a style={{ cursor: "pointer" }} onClick={() => this.addItemToCart(product)} >Thêm vào giỏ</a></li>
                         <li><a style={{ cursor: "pointer" }} onClick={(id) => this.getInfoProduct(product.productId)} title="chi tiểt" className="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i className="fa fa-eye" /></a></li>
-                        <li><a style={{ cursor: "pointer" }} onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" ><i className="fa fa-heart-o" /></a></li>
+                        <li><a style={{ cursor: "pointer" }} onClick={() => this.addItemToFavorite(product.productId)} className="links-details" title="yêu thích" ><i className="fa fa-heart-o" style={{ color: Array.from(wishlist).find(item => item.product.productId === product.productId) ? "#f13961" : "unset" }} /></a></li>
                       </div>
                     )
 
@@ -215,7 +241,8 @@ class ProductItem extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    getProduct: state.product
+    getProduct: state.product,
+    wishlist: state.wishlist,
   }
 }
 
@@ -229,6 +256,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     addWishList: (id, idProduct) => {
       dispatch(actAddWishListRequest(id, idProduct));
+    },
+    fetch_wishlist: (id) => {
+      dispatch(actFetchWishListRequest(id))
     }
   }
 }

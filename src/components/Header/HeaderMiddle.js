@@ -1,17 +1,19 @@
-import React, { Component } from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import { toast } from 'react-toastify';
-import { connect } from 'react-redux'
-import { actFetchCartRequest } from '../../redux/actions/cart';
-import { actGetProductOfKeyRequest } from '../../redux/actions/products'
-import { actFetchWishListRequest } from '../../redux/actions/wishlist'
-import { withRouter } from 'react-router-dom';
-import Speech from './Speech';
+import Divider from '@mui/material/Divider';
+import React, { Component } from 'react';
 import Modal from "react-modal";
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 import Keyboard from "react-simple-keyboard";
+import { toast } from 'react-toastify';
+import { actFetchCartRequest } from '../../redux/actions/cart';
+import { actGetProductOfKeyRequest } from '../../redux/actions/products';
+import { actFetchWishListRequest } from '../../redux/actions/wishlist';
+import { customizedNavigate } from '../../utils/components/GlobalHistory';
+import Speech from './Speech';
+import callApi from '../../utils/apiCaller';
 
-import './header-middle.css';
 import "react-simple-keyboard/build/css/index.css";
+import './header-middle.css';
 
 let token, id;
 const customStyles = {
@@ -68,8 +70,7 @@ class HeaderMiddle extends Component {
     if (token) {
       this.props.fetch_items(id);
 
-      //tạm bỏ vì chưa có api
-      //this.props.fetch_wishlist(id);
+      this.props.fetch_wishlist(id);
     }
 
   }
@@ -137,9 +138,11 @@ class HeaderMiddle extends Component {
       // if (res) {
       //   this.props.history.push(`/search/${textSearch}`);
       // }
+      // const newKeyPage = { key: textSearch, totalPage: 1 }
+      // await store.dispatch(actFetchProducts([]));
+      // await store.dispatch(actFetchKeySearch(newKeyPage));
+
       this.props.history.push(`/search/${textSearch}`);
-
-
     }
 
   }
@@ -261,6 +264,47 @@ class HeaderMiddle extends Component {
       });
   }
 
+  handleClickWishlist = (event) => {
+    console.log("click event", event);
+    if (event.target.id !== "unLikeAction") {
+      const wishlistItems = document.getElementsByClassName("wishlist-items")[0];
+      const aTag = document.querySelector(".hm-wishlist > a");
+
+      if (Array.from(wishlistItems.classList).find(item => item === "wishlist-items--show")) {
+        wishlistItems.classList.remove("wishlist-items--show");
+        aTag.classList.remove("wishlist-items--active");
+        console.log('true');
+      }
+      else {
+        wishlistItems.classList.add("wishlist-items--show");
+        aTag.classList.add("wishlist-items--active");
+        console.log('false');
+      }
+    }
+  }
+
+  handleBlurWishlist = (event) => {
+    console.log("blur event", event);
+    const wishlistItems = document.getElementsByClassName("wishlist-items")[0];
+    const aTag = document.querySelector(".hm-wishlist > a");
+
+    wishlistItems.classList.remove("wishlist-items--show");
+    aTag.classList.remove("wishlist-items--active");
+  }
+
+  handleClickWishlistItem = (productId) => {
+    // this.props.history.push(`/products/${productId}`);
+    customizedNavigate(`/products/${productId}`);
+    // return (<Link to={`/products/${productId}`}></Link>).click();
+  }
+
+  handleUnlikeWishlistItem = async (wishlistId) => {
+    let token = localStorage.getItem('_auth');
+    await callApi(`wishlist/delete/${wishlistId}`, 'DELETE', undefined, token);
+    this.props.fetch_wishlist(id);
+    toast.success('Đã xóa khỏi mục ưa thích')
+  }
+
   render() {
     setTimeout(() => {
       //ẩn các dòng historySearch empty
@@ -277,8 +321,7 @@ class HeaderMiddle extends Component {
     }, 500);
 
     const { textSearch, openModalSpeech } = this.state;
-    const { cart, xwishList } = this.props;
-    const wishList = [];
+    const { cart, wishList } = this.props;
 
     return (
       <div className="header-middle pl-sm-0 pr-sm-0 pl-xs-0 pr-xs-0">
@@ -353,9 +396,9 @@ class HeaderMiddle extends Component {
                 <ul className="hm-menu">
 
                   {/* Begin Header Middle Wishlist Area */}
-                  <li className="hm-wishlist">
-                    <Link to="/wishlist">
-                      <span className="cart-item-count wishlist-item-count">
+                  <li className="hm-wishlist" onClick={(event) => { this.handleClickWishlist(event) }} onBlur={(event) => { this.handleBlurWishlist(event) }}>
+                    <Link to="#">
+                      <span className="cart-item-count wishlist-item-count" style={{ height: wishList.length === 0 ? "unset" : 26 }}>
                         {
                           wishList.length === 0 || !wishList ?
                             (
@@ -370,6 +413,41 @@ class HeaderMiddle extends Component {
                         }
                       </span>
                       <i className="fa fa-heart-o" />
+                      <div className='wishlist-items'>
+                        <span className='dropdow-arrow'></span>
+                        {
+                          wishList.length > 0 ?
+                            <div style={{ width: "100%", maxHeight: 450, overflow: "auto" }}>
+                              {
+                                wishList.map((item, index) => {
+                                  return (
+                                    <>
+                                      <div className='wishlist-item' key={index}>
+                                        <img style={{ cursor: "pointer" }} src={item.product.image} alt="notFound" onClick={() => { this.handleClickWishlistItem(item.product.productId) }} />
+                                        <div className='wishlist-item__name' style={{ fontSize: 18, lineHeight: "initial", flex: 1, cursor: "pointer" }} onClick={() => { this.handleClickWishlistItem(item.product.productId) }}>{item.product.productName}</div>
+                                        <div className='wishlist-item__unlike' style={{ width: 50 }}><i id='unLikeAction' className="fa fa-heart-o" style={{ cursor: "pointer" }} onClick={() => { this.handleUnlikeWishlistItem(item.wishlistId) }} /></div>
+                                      </div>
+                                      {
+                                        wishList.length - 1 !== index &&
+                                        <Divider sx={{
+                                          margin: "12px 8px 8px 8px",
+                                          "&::before,&::after": {
+                                            borderTop: "thin solid rgb(82 55 71 / 68%)",
+                                          },
+                                        }}
+                                        />
+                                      }
+                                    </>
+                                  );
+                                })
+                              }
+                            </div>
+                            :
+                            <>
+                              <img src='https://brabantia.com.vn/images/cart-empty.png' style={{ objectFit: "contain", width: "100%" }} alt='notFound'></img>
+                            </>
+                        }
+                      </div>
                     </Link>
                   </li>
 
@@ -423,7 +501,7 @@ class HeaderMiddle extends Component {
 const mapStateToProps = (state) => {
   return {
     cart: state.cart,
-    countWishList: state.wishlist
+    wishList: state.wishlist
   }
 }
 

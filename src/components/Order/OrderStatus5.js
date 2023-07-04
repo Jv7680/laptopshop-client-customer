@@ -18,7 +18,8 @@ const customStyles = {
         bottom: "auto",
         marginRight: "-50%",
         transform: "translate(-50%, -50%)",
-        width: "1000px"
+        width: "1000px",
+        height: "90vh",
     }
 };
 

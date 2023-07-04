@@ -7,7 +7,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { startLoading, doneLoading } from '../../utils/loading'
 import { withRouter } from 'react-router-dom';
 import callApi from '../../utils/apiCaller';
-
+import { paypal } from 'paypal-checkout/dist/checkout.lib';
+import PaypalCheckoutButton from '../CheckOut/PaypalCheckoutButton';
+import store from '../..';
+import { actClearCart } from '../../redux/actions/cart';
 
 import "./style.css";
 toast.configure()
@@ -42,8 +45,8 @@ class OrderInfo extends Component {
         console.log('cartItemListData: ', cartItemListData);
         this.cartItemList = cartItemListData;
         console.log('cartItemList: ', this.cartItemList);
-
     }
+
 
     handleChange = event => {
         const name = event.target.name;
@@ -53,9 +56,7 @@ class OrderInfo extends Component {
         });
     }
 
-    handleSubmit = async event => {
-        event.preventDefault();
-        // console.log(event)
+    handleSubmit = async (paymentMethod) => {
         const { recipientname, address, phoneNumber, customerNote } = this.state;
         console.log('recipientname, address, phoneNumber, customerNote là: ', recipientname, address, phoneNumber, customerNote);
 
@@ -69,6 +70,7 @@ class OrderInfo extends Component {
             total: localStorage.getItem('total'),
             customerNote: customerNote,
             cartItemList: this.cartItemList,
+            paymentmethod: paymentMethod,
         }
 
         startLoading();
@@ -77,6 +79,7 @@ class OrderInfo extends Component {
 
         console.log('resssss: ', res);
         if (res.status === 200) {
+            await store.dispatch(actClearCart());
             toast.success('Đặt Hàng Thành Công');
             this.props.history.push(`/`);
         }
@@ -131,8 +134,33 @@ class OrderInfo extends Component {
                                     name='phoneNumber'
                                 />
                             </div>
+                            {/* <div className="col-md-12 col-12 mb-20">
+                                <label>Phương thức thanh toán *</label>
+                                <div style={{ display: "flex" }}>
+                                    <input
+                                        value={"Khi nhận hàng"}
+                                        checked={this.state.checkoutAtHome}
+                                        onChange={() => { this.setState({ checkoutAtHome: true, checkoutPaypal: false }) }}
+                                        className="mb-0"
+                                        type="radio"
+                                        name='checkout'
+                                        style={{ width: 18, height: 18, cursor: "pointer", marginRight: 4 }}
+                                    />
+                                    <label for="html" style={{ margin: "0 30px 0 0" }}>Khi nhận hàng</label>
+                                    <input
+                                        value={"Paypal"}
+                                        checked={this.state.checkoutPaypal}
+                                        onChange={() => { this.setState({ checkoutAtHome: false, checkoutPaypal: true }) }}
+                                        className="mb-0"
+                                        type="radio"
+                                        name='checkout'
+                                        style={{ width: 18, height: 18, cursor: "pointer", marginRight: 4 }}
+                                    />
+                                    <label for="html">Paypal</label><br></br>
+                                </div>
+                            </div> */}
                             <div className="col-md-12 col-12 mb-20">
-                                <label>Ghi chú *</label>
+                                <label>Ghi chú </label>
                                 <input
                                     value={customerNote}
                                     onChange={this.handleChange}
@@ -142,8 +170,17 @@ class OrderInfo extends Component {
                                     name='customerNote'
                                 />
                             </div>
-                            <div className="col-md-4">
-                                <button onClick={(event) => this.handleSubmit(event)} className="register-button mt-0 mb-3" value="Submit">Xác Nhận</button>
+                            <div className="col-12" >
+                                <button
+                                    onClick={() => this.handleSubmit("Khi nhận hàng")}
+                                    className="register-button mt-0 mb-3"
+                                    type='button'
+                                    style={{ width: "100%", height: 54 }}>
+                                    <i class="fa-solid fa-house"></i> Thanh toán khi nhận hàng
+                                </button>
+                                <div className="btnPaypal" >
+                                    <PaypalCheckoutButton onSuccess={this.handleSubmit}></PaypalCheckoutButton>
+                                </div>
                             </div>
 
                         </div>

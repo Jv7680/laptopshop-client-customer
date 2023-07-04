@@ -5,7 +5,7 @@ import './style.css'
 import { actTokenRequest } from '../../redux/actions/auth'
 import { actFetchUserRequset, actFetchUser } from '../../redux/actions/user';
 import { startLoading, doneLoading } from '../../utils/loading'
-
+import { actFetchWishList } from '../../redux/actions/wishlist'
 import store from '../..';
 import { actFetchCart } from '../../redux/actions/cart';
 
@@ -27,6 +27,8 @@ class HeaderTop extends Component {
     store.dispatch(actFetchCart([]));
     //cập nhập lại user rỗng
     store.dispatch(actFetchUser({}));
+    //cập nhập lại wishlist rỗng
+    store.dispatch(actFetchWishList([]));
 
     startLoading();
     await this.props.setTokenRedux(token);

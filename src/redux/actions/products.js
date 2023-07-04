@@ -10,7 +10,7 @@ export const actFetchProductsRequest = (page, newKey) => {
     return async (dispatch) => {
         // dispatch(actShowLoading());
         return await new Promise((resolve, reject) => {
-            callApi(`product/search?page=${newPage}&size=12&keyword=`, 'GET')
+            callApi(`product/search?page=${newPage}&size=12&keyword=`, 'GET', null, null, true)
                 .then(res => {
                     if (res && res.status === 200) {
                         console.log("đây là trả về", res);
@@ -58,7 +58,7 @@ export const actGetProductOfKeyRequest = (key, page) => {
     const newPage = page === null || page === undefined ? 1 : page
     const newKey = (key === undefined || key === '' || key === null) ? 'laptop' : key
     console.log(newPage, newKey)
-    return dispatch => {
+    return async (dispatch) => {
         // store.dispatch(actShowLoading());
         return new Promise((resolve, reject) => {
             let token = localStorage.getItem('_auth');
@@ -77,7 +77,7 @@ export const actGetProductOfKeyRequest = (key, page) => {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.log("error in actGetProductOfKeyRequest", err);
                     reject(err);
                     // setTimeout(function () { store.dispatch(actHiddenLoading()) }, 200);
                 });

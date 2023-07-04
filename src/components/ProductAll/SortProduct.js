@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import BeautyStars from 'beauty-stars';
 import Swal from "sweetalert2";
+import { connect } from "react-redux";
 import { toast } from 'react-toastify';
 import './style.css'
 
@@ -81,6 +82,7 @@ class SortProduct extends Component {
 
     render() {
         const { pricesGoUp, pricesGoDown, mostSold } = this.state;
+        const { filterData } = this.props;
 
         //biến sort này sẽ được cập nhập mỗi khi state thay đổi
         const newSort = { pricesGoUp, pricesGoDown, mostSold };
@@ -89,9 +91,21 @@ class SortProduct extends Component {
 
         return (
             <div className="row sort-area">
-                <div className='col-auto'>
+                {/* <div className='col-auto'>
                     <span className='btn-filter' onClick={(event) => { this.handleOnClickBtnFilter(event) }} name='btnFilter'><i class="fa fa-filter"></i> Bộ lọc</span>
-                </div>
+                </div> */}
+                {
+                    this.props.history.location.pathname !== "/products" ?
+                        (
+                            null
+                        )
+                        :
+                        (
+                            <div className='col-auto'>
+                                <span className='btn-filter' onClick={(event) => { this.handleOnClickBtnFilter(event) }} name='btnFilter'><i class="fa fa-filter"></i> Bộ lọc</span>
+                            </div>
+                        )
+                }
                 <div className='col-auto'>
                     <span className='sort-title'>Sắp xếp theo</span>
                 </div>
@@ -109,4 +123,10 @@ class SortProduct extends Component {
     }
 }
 
-export default withRouter(SortProduct)
+const mapStateToProps = state => {
+    return {
+        filterData: state.filterData,
+    };
+};
+
+export default connect(mapStateToProps, undefined)(withRouter(SortProduct))

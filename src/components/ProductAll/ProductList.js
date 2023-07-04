@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import ProductItem from "./ProductItem";
 import { connect } from "react-redux";
-import { actFetchProductsRequest, actGetProductOfKeyRequest } from "../../redux/actions/products";
+import { actFetchProductsRequest, actGetProductOfKeyRequest, actFetchProducts, actFetchKeySearch } from "../../redux/actions/products";
+import { actFetchFilterData } from '../../redux/reducers/filterData';
 import store from '../..';
 import callApi from '../../utils/apiCaller';
 import Paginator from 'react-js-paginator';
@@ -22,10 +23,12 @@ class ProductList extends Component {
     componentDidMount = async () => {
         // trường hợp vào trang products
         if (this.props.history.location.pathname === "/products") {
+            await store.dispatch(actFetchFilterData([]));
             await this.fetch_reload_data();
         }
         // trường hợp vào trang search
         else {
+            await store.dispatch(actFetchFilterData([]));
             await this.fetch_reload_data_search_page();
         }
     }
@@ -37,6 +40,13 @@ class ProductList extends Component {
         if (keySearch !== currentKeySearch) {
             this.fetch_reload_data_search_page();
         }
+
+        // console.log("page là:", this.state.currentPage);
+        // if (this.props.filterData && this.props.filterData.length > 0 && this.state.currentPage !== 1) {
+        //     this.setState({
+        //         currentPage: 1
+        //     });
+        // }
     }
 
     async fetch_reload_data() {
@@ -52,11 +62,24 @@ class ProductList extends Component {
 
     async fetch_reload_data_search_page() {
         let { keySearch } = this.props; console.log("keySearch", keySearch);
-        let res = await actGetProductOfKeyRequest(keySearch)();
-        console.log("fetch_reload_data_keySearch", res);
+        // mới vào search sẽ clear products
+        const newKeyPage = { key: keySearch, totalPage: 1 };
+        if (keySearch !== this.state.currentKeySearch && this.props.products.length !== 0) {
+            await store.dispatch(actFetchProducts([]));
+        }
+
+        // await store.dispatch(actFetchKeySearch(newKeyPage));
+
         this.setState({
-            total: res.totalPage,
             currentKeySearch: keySearch,
+        }, async () => {
+            let res = await actGetProductOfKeyRequest(keySearch)();
+
+            console.log("fetch_reload_data_keySearch", res);
+
+            this.setState({
+                total: res.totalPage,
+            });
         });
     }
 
@@ -93,14 +116,20 @@ class ProductList extends Component {
     }
 
     sortByMostSold = (a, b) => {
-        // chờ change database
+        let x = a.soldQuantity;
+        let y = b.soldQuantity;
+        return y - x;
     }
 
     render() {
-        let { products, sort } = this.props;
+        let { products, filterData, sort } = this.props;
         const { total } = this.state;
         console.log('filter in product', this.props.filter);
         console.log('sort in product', this.props.sort);
+
+        if (filterData && filterData.length > 0) {
+            products = [...filterData];
+        }
 
         // sort products
         if (sort.pricesGoUp) {
@@ -135,22 +164,31 @@ class ProductList extends Component {
                     }
                 </div>
 
-                <div className="paginatoin-area">
-                    <div className="row">
-                        <div className="col-lg-6 col-md-6">
-                            <p>Xem từ 1-12 sản phẩm</p>
-                        </div>
-                        <div className="col-lg-6 col-md-6">
-                            <ul className="pagination-box">
-                                <Paginator
-                                    pageSize={1}
-                                    totalElements={total}
-                                    onPageChangeCallback={(e) => { this.pageChange(e) }}
-                                />
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                {
+                    filterData && filterData.length > 0 ?
+                        (
+                            null
+                        )
+                        :
+                        (
+                            <div className="paginatoin-area">
+                                <div className="row">
+                                    <div className="col-lg-6 col-md-6">
+                                        <p>Xem từ 1-12 sản phẩm</p>
+                                    </div>
+                                    <div className="col-lg-6 col-md-6">
+                                        <ul className="pagination-box">
+                                            <Paginator
+                                                pageSize={1}
+                                                totalElements={total}
+                                                onPageChangeCallback={(e) => { this.pageChange(e) }}
+                                            />
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                }
             </>
         )
     }
@@ -159,6 +197,7 @@ class ProductList extends Component {
 const mapStateToProps = state => {
     return {
         products: state.products,
+        filterData: state.filterData,
         search: state.search,
     };
 };
