@@ -327,8 +327,7 @@ a.button-small::after {
 a.button-border span,
 a.button-border-white span,
 input,
-select,
-textarea {
+select {
 	-webkit-transition: all 0.5s ease-out 0s;
 	-moz-transition: all 0.5s ease-out 0s;
 	-ms-transition: all 0.5s ease-out 0s;

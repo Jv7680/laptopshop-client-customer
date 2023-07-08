@@ -186,6 +186,9 @@ class Chat extends React.Component {
     }
 
     handleSubmit = async () => {
+        let chatContentTextArea = document.getElementsByClassName("chat-content-textarea")[0];
+        chatContentTextArea.style.height = "21px";
+
         let { modalState, messageListAdmin, messageListChatGPT, chatContent } = this.state;
         let { user } = this.props;
         if (chatContent.length === 0) {
