@@ -116,8 +116,8 @@ export const actRegisterGoogleRequest = (user) => {
     return async () => {
         const body = {
             gmail: user.email,
-            lastname: user.family_name,
-            firstname: user.given_name,
+            lastname: user.family_name || "",
+            firstname: user.given_name || "",
             phonenumber: user.phonenumber,
             address: user.address,
         };

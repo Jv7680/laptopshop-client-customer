@@ -421,8 +421,8 @@ class HeaderMiddle extends Component {
                               {
                                 wishList.map((item, index) => {
                                   return (
-                                    <>
-                                      <div className='wishlist-item' key={index}>
+                                    <React.Fragment key={index}>
+                                      <div className='wishlist-item'>
                                         <img style={{ cursor: "pointer" }} src={item.product.image} alt="notFound" onClick={() => { this.handleClickWishlistItem(item.product.productId) }} />
                                         <div className='wishlist-item__name' style={{ fontSize: 18, lineHeight: "initial", flex: 1, cursor: "pointer" }} onClick={() => { this.handleClickWishlistItem(item.product.productId) }}>{item.product.productName}</div>
                                         <div className='wishlist-item__unlike' style={{ width: 50 }}><i id='unLikeAction' className="fa fa-heart-o" style={{ cursor: "pointer" }} onClick={() => { this.handleUnlikeWishlistItem(item.wishlistId) }} /></div>
@@ -437,7 +437,7 @@ class HeaderMiddle extends Component {
                                         }}
                                         />
                                       }
-                                    </>
+                                    </React.Fragment>
                                   );
                                 })
                               }
