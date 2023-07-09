@@ -84,7 +84,10 @@ class HeaderTop extends Component {
                               <div className="navList__item-user-name ml-10"> {user.lastname + " " + user.firstname || "not found"}</div>
                             </Link>
                             <div className="fix-text-item dropdown-menu ht-setting-list " aria-labelledby="dropdownMenuLink">
-                              <Link className="fix-text-item dropdown-item" to="/profile">Cá nhân</Link>
+                              {
+                                user.provider !== 3 &&
+                                <Link className="fix-text-item dropdown-item" to="/profile">Cá nhân</Link>
+                              }
                               <Link className="fix-text-item dropdown-item" to="/order/status1">Đơn Hàng</Link>
                               <Link onClick={this.logOut} to="/" className="fix-text-item dropdown-item">Đăng xuất</Link>
                             </div>

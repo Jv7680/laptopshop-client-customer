@@ -1,17 +1,13 @@
-import * as Types from '../../constants/ActionType';
-import { Redirect } from 'react-router-dom';
-import { actFetchUserRequset } from '../../redux/actions/user';
-import { actFetchWishListRequest } from './wishlist';
-import callApi from '../../utils/apiCaller';
 import { toast } from 'react-toastify';
-import { startLoading, doneLoading } from '../../utils/loading';
 import 'react-toastify/dist/ReactToastify.css';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import Swal from 'sweetalert2';
+import * as Types from '../../constants/ActionType';
+import { actFetchUserRequset } from '../../redux/actions/user';
+import callApi from '../../utils/apiCaller';
+import { doneLoading, startLoading } from '../../utils/loading';
 import { actFetchCartRequest } from './cart';
-
-const MySwal = withReactContent(Swal)
-
+import { actFetchWishListRequest } from './wishlist';
+import store from '../..';
 
 export const actLoginRequest = (user) => {
     return async dispatch => {
@@ -35,6 +31,34 @@ export const actLoginRequest = (user) => {
     };
 }
 
+export const actLoginGoogleRequest = (userGmail) => {
+    return async dispatch => {
+        let body = {
+            username: userGmail
+        };
+        const res = await callApi('auth/loginggoauth', 'POST', body);
+        // fail
+        if (res.data.message) {
+            return false;
+        }
+        else {
+            const token = res.data.token
+            //const id = res.data.customerId
+            const id = res.data.id
+            const idAccount = res.data.id
+            localStorage.setItem('_auth', token);
+            localStorage.setItem('_id', id);
+            localStorage.setItem('_idaccount', idAccount)
+            localStorage.setItem('_username', res.data.username);
+            dispatch(actLogin(token));
+            dispatch(actFetchUserRequset(id));
+            dispatch(actFetchCartRequest(id));
+            dispatch(actFetchWishListRequest(id));
+        }
+        return true;
+    };
+}
+
 export const actActiveRequest = (activeCode, user) => {
     return async dispatch => {
         const res = await callApi(`registration/activate/${activeCode}`, 'GET');
@@ -53,21 +77,21 @@ export const actActiveRequest = (activeCode, user) => {
     };
 }
 
-export const actLoginGoogleRequest = (token, customerId, id, provider) => {
-    return async dispatch => {
-        const res = await callApi(`auth/oauth/google?id=${id}&customerId=${customerId}&provider=${provider}`, 'GET');
+// export const actLoginGoogleRequest = (token, customerId, id, provider) => {
+//     return async dispatch => {
+//         const res = await callApi(`auth/oauth/google?id=${id}&customerId=${customerId}&provider=${provider}`, 'GET');
 
-        console.log(`duw lieu xem co ten khong${provider}`)
-        localStorage.setItem('_auth', token);
-        localStorage.setItem('_id', customerId);
-        localStorage.setItem('_idaccount', id)
-        const data = { provider, ...res.data }
-        if (res && res.status === 200) {
-            dispatch(actLogin(token));
-            dispatch(actFetchUser(data));
-        }
-    };
-}
+//         console.log(`duw lieu xem co ten khong${provider}`)
+//         localStorage.setItem('_auth', token);
+//         localStorage.setItem('_id', customerId);
+//         localStorage.setItem('_idaccount', id)
+//         const data = { provider, ...res.data }
+//         if (res && res.status === 200) {
+//             dispatch(actLogin(token));
+//             dispatch(actFetchUser(data));
+//         }
+//     };
+// }
 
 export const actLogin = (token) => {
     return {
@@ -83,6 +107,26 @@ export const actRegisterRequest = (user) => {
         const res = await callApi('registration', 'POST', user, undefined, true);
         if (res && res.status === 200) {
             console.log(res);
+            return res;
+        }
+    };
+}
+
+export const actRegisterGoogleRequest = (user) => {
+    return async () => {
+        const body = {
+            gmail: user.email,
+            lastname: user.family_name,
+            firstname: user.given_name,
+            phonenumber: user.phonenumber,
+            address: user.address,
+        };
+        const res = await callApi('registration/ggoauth', 'POST', body, undefined, true);
+        console.log('actRegisterGoogleRequest res: ', res);
+
+        if (res && res.status === 200) {
+            await store.dispatch(actLoginGoogleRequest(user.email));
+            toast.success('Đăng Ký Tài Khoản Thành Công! Đã Đăng Nhập!');
             return res;
         }
     };

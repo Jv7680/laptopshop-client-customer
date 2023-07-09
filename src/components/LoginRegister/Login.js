@@ -1,13 +1,10 @@
-import React, { Component } from 'react'
-import { actLoginRequest } from '../../redux/actions/auth';
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { startLoading, doneLoading } from '../../utils/loading'
-import { Link } from 'react-router-dom'
-import { withRouter } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login'
+import { actLoginRequest } from '../../redux/actions/auth';
+import { doneLoading, startLoading } from '../../utils/loading';
 import validateLoginRegister from '../../utils/validations/validateLoginRegister';
 import GoogleButton from './GoogleButton';
 import "./style.css";

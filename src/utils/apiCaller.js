@@ -1,13 +1,10 @@
 import axios from 'axios';
-import * as Config from '../constants/Config';
 import { toast } from 'react-toastify';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-import store from '../index'
-import { actFetchCart } from '../redux/actions/cart'
+import Swal from 'sweetalert2';
 import { startLoading, stopLoading } from '../components/Loading/setLoadingState';
-import { actFetchProducts, actFetchKeySearch } from '../redux/actions/products';
-const MySwal = withReactContent(Swal)
+import * as Config from '../constants/Config';
+import store from '../index';
+import { actFetchCart } from '../redux/actions/cart';
 toast.configure()
 
 export default async function callApi(endpoint, method = 'GET', body, token, setStartLoading) {
@@ -30,6 +27,7 @@ export default async function callApi(endpoint, method = 'GET', body, token, set
         url: `${Config.API_URL}/${endpoint}`,
         data: body
       });
+      console.log("data axios", data);
       return data;
     }
   }

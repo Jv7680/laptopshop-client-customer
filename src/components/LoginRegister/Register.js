@@ -1,13 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { actRegisterRequest } from '../../redux/actions/auth';
-import { connect } from 'react-redux'
-import { startLoading, doneLoading } from '../../utils/loading'
-import { withRouter } from 'react-router-dom';
 import validateLoginRegister from '../../utils/validations/validateLoginRegister';
-import { Link } from 'react-router-dom';
-import store from '../..';
 
 toast.configure()
 
