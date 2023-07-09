@@ -36,7 +36,7 @@ export const actLoginGoogleRequest = (userGmail) => {
         let body = {
             username: userGmail
         };
-        const res = await callApi('auth/loginggoauth', 'POST', body);
+        const res = await callApi('auth/loginggoauth', 'POST', body, undefined, true);
         // fail
         if (res.data.message) {
             return false;
