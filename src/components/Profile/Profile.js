@@ -304,7 +304,9 @@ class Profile extends Component {
                                 </li>
 
                                 {
-                                    user && user.provider == "GOOGLE" ? null :
+                                    user && user.provider === 3 ?
+                                        null
+                                        :
                                         <li className="nav-item">
                                             <a className="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Đổi mật khẩu</a>
                                         </li>

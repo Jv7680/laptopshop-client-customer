@@ -7,6 +7,7 @@ import { actLoginRequest } from '../../redux/actions/auth';
 import { doneLoading, startLoading } from '../../utils/loading';
 import validateLoginRegister from '../../utils/validations/validateLoginRegister';
 import GoogleButton from './GoogleButton';
+import store from '../..';
 import "./style.css";
 toast.configure()
 
@@ -58,7 +59,9 @@ class Login extends Component {
     }
     console.log(user)
     startLoading();
-    await this.props.loginRequest(user);
+    // await this.props.loginRequest(user);
+    let result = await store.dispatch(actLoginRequest(user));
+    console.log("result login", result);
     doneLoading();
 
     setTimeout(() => {

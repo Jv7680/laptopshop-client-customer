@@ -8,8 +8,8 @@ import BeautyStars from "beauty-stars";
 import { connect } from 'react-redux'
 import { actFetchOrdersDeliveredRequest, actDeleteOrderRequest, actAddReview, actFetchOrdersRequest } from '../../redux/actions/order'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-const MySwal = withReactContent(Swal)
+import { getProductFirstImageURL } from '../../firebase/CRUDImage';
+
 let id;
 const customStyles = {
     content: {
@@ -79,7 +79,15 @@ class OrderStatus4 extends Component {
                     <tr>
                         <td className="li-product-thumbnail d-flex justify-content-center">
                             <Link to={`/products/${item.productId}`} >
-                                <div className="fix-cart"> <img className="fix-img" src={item.imgLink} alt="Li's Product" /></div>
+                                <div className="fix-cart">
+                                    <img
+                                        id={`image-modal-product-${item.productId}`}
+                                        className="fix-img"
+                                        src={process.env.PUBLIC_URL + '/images/logo/logoPTCustomer1.png'}
+                                        onLoad={(event) => { event.target.src.includes('/images/logo/logoPTCustomer1.png') && this.setImage(item.productId, false) }}
+                                        alt="notFound"
+                                    />
+                                </div>
                             </Link>
                         </td>
                         <td className="li-product-name">
@@ -175,11 +183,19 @@ class OrderStatus4 extends Component {
             )
 
         }
-
-
-
-
     };
+
+    setImage = async (productId) => {
+        let imageURL = await getProductFirstImageURL(productId, false);
+
+        if (imageURL === '') {
+            imageURL = process.env.PUBLIC_URL + '/images/logo/logoPTCustomer1.png';
+            document.getElementById(`image-modal-product-${productId}`).setAttribute('src', imageURL);
+        }
+        else {
+            document.getElementById(`image-modal-product-${productId}`).setAttribute('src', imageURL);
+        }
+    }
 
     render() {
         const { orders } = this.props
@@ -274,7 +290,7 @@ class OrderStatus4 extends Component {
                                             ariaHideApp={false}
                                             contentLabel="Example Modal"
                                         >
-                                            <div className="table-content table-responsive">
+                                            <div className="table-content table-responsive" style={{ minHeight: "90%" }}>
                                                 <table className="table">
                                                     <thead>
                                                         <tr>
@@ -294,12 +310,18 @@ class OrderStatus4 extends Component {
                                                 </table>
                                             </div>
                                             <div className="feedback-input">
-                                                <div className="feedback-btn pb-15">
+                                                <div className="feedback-btn pb-15" style={{ height: 50 }}>
 
                                                     <button
                                                         onClick={this.closeModal}
                                                         className="btn mr-1"
-                                                        style={{ background: "#fed700", color: "white" }}
+                                                        style={{
+                                                            background: "#fed700",
+                                                            color: "white",
+                                                            position: "absolute",
+                                                            bottom: -10,
+                                                            right: 0
+                                                        }}
                                                     >
                                                         Thoát
                                                     </button>

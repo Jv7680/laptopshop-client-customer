@@ -10,6 +10,7 @@ class SortProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            newestProduct: true,
             pricesGoUp: false,
             pricesGoDown: false,
             mostSold: false,
@@ -27,9 +28,10 @@ class SortProduct extends Component {
         let name = event.target.attributes.name.nodeValue;
         let listSortItem = document.getElementsByClassName('sort-item');
 
-        for (let i = 0; i <= 2; i++) {
+        for (let i = 0; i <= 3; i++) {
             listSortItem[i].classList.remove('sort-item--active');
             this.setState({
+                newestProduct: false,
                 pricesGoUp: false,
                 pricesGoDown: false,
                 mostSold: false,
@@ -81,11 +83,11 @@ class SortProduct extends Component {
     }
 
     render() {
-        const { pricesGoUp, pricesGoDown, mostSold } = this.state;
+        const { newestProduct, pricesGoUp, pricesGoDown, mostSold } = this.state;
         const { filterData } = this.props;
 
         //biến sort này sẽ được cập nhập mỗi khi state thay đổi
-        const newSort = { pricesGoUp, pricesGoDown, mostSold };
+        const newSort = { newestProduct, pricesGoUp, pricesGoDown, mostSold };
         //gán newSort cho sort
         this.sort = newSort;
 
@@ -108,6 +110,9 @@ class SortProduct extends Component {
                 }
                 <div className='col-auto'>
                     <span className='sort-title'>Sắp xếp theo</span>
+                </div>
+                <div className='col-auto'>
+                    <span className='sort-item sort-item--active' onClick={(event) => { this.handleOnClickSortItem(event) }} name='newestProduct'>Sản phẩm mới</span>
                 </div>
                 <div className='col-auto'>
                     <span className='sort-item' onClick={(event) => { this.handleOnClickSortItem(event) }} name='pricesGoUp'>Giá tăng dần</span>

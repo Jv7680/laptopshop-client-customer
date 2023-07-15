@@ -21,7 +21,7 @@ class ShoppingCartItems extends Component {
     const { item } = this.props;
     let imageURL = await getProductFirstImageURL(item.product.productId);
     console.log("imageURLxxxxxxx", imageURL);
-    if (imageURL != "") {
+    if (imageURL !== "") {
       this.setState({
         imageURL,
       });

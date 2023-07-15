@@ -1,28 +1,23 @@
 import React, { Component } from "react";
+import Modal from "react-modal";
+import { connect } from "react-redux";
+import { Redirect, withRouter } from "react-router-dom";
 import { Rating } from 'react-simple-star-rating';
-import { Link, Redirect } from "react-router-dom";
+import Slider from "react-slick";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { connect } from "react-redux";
-import store from "../..";
-import { actGetProductRequest, actFetchProductsRequest } from "../../redux/actions/products";
-import { actAddCartRequest } from "../../redux/actions/cart";
-import callApi from "../../utils/apiCaller";
-import BeautyStars from "beauty-stars";
-import RatingView from "./RatingView"
-import "./style.css";
-import { is_empty } from "../../utils/validations";
-import { result } from "lodash";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import Swal from "sweetalert2";
-import { withRouter } from 'react-router-dom';
-import { getProductListImageURL, getProductListImage360URL } from "../../firebase/CRUDImage";
+import { getProductListImage360URL, getProductListImageURL } from "../../firebase/CRUDImage";
+import { actAddCartRequest } from "../../redux/actions/cart";
+import { actGetProductRequest } from "../../redux/actions/products";
 import { actAddWishListRequest, actFetchWishListRequest } from "../../redux/actions/wishlist";
+import callApi from "../../utils/apiCaller";
 import Image360 from "./Image360";
 import ProductInfor from "./ProductInfor";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Modal from "react-modal";
+import RatingView from "./RatingView";
+import "./style.css";
 
 toast.configure();
 
@@ -420,21 +415,21 @@ class ProductViewDetail extends Component {
                   <span className="product-name">{product.productName}</span>
                   {/* Xử lý ngừng kinh doanh, hết hàng, và có discount */}
                   {
-                    product.isDeleted === 'yes' ?
+                    product.isdeleted === 1 ?
                       (
-                        <>
+                        <div style={{ marginTop: 16 }}>
                           <h3>Ngừng Kinh Doanh! </h3>
                           <h6>Chân thành xin lỗi quý khách, chúng tôi đã ngừng kinh doanh sản phẩm này.</h6>
-                        </>
+                        </div>
                       )
                       :
                       (
                         product.quantity === 0 ?
                           (
-                            <>
+                            <div style={{ marginTop: 16 }}>
                               <h3>Tạm Hết Hàng! </h3>
                               <h6>Chân thành xin lỗi quý khách, chúng tôi sẽ mong chóng nhập hàng để đáp ứng nhu cầu mua sắm của bạn.</h6>
-                            </>
+                            </div>
                           )
                           :
                           (
@@ -479,7 +474,7 @@ class ProductViewDetail extends Component {
                   </div>
 
                   {
-                    product.quantity === 0 || product.isDelete ?
+                    product.quantity === 0 || product.isdeleted === 1 ?
                       (
                         null
                       )
@@ -576,7 +571,8 @@ class ProductViewDetail extends Component {
               <RatingView
                 commented={commented}
                 rating={product.reviewsResponses ? product.reviewsResponses.rating : 0}
-                listReviews={product.reviewsResponses ? product.reviewsResponses.listReviews : []}></RatingView>
+                listReviews={product.reviewsResponses ? product.reviewsResponses.listReviews : []}>
+              </RatingView>
             </div>
 
             {/* danh sách comment */}

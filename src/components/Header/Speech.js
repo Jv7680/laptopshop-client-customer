@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { BounceLoader } from 'react-spinners';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import MicOffIcon from '@mui/icons-material/MicOff';
-import './speech.css'
+import { useEffect } from 'react';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { BounceLoader } from 'react-spinners';
+import './speech.css';
 let countRender = 0;
 let countSetTextSearch = 0;
 
@@ -23,6 +23,7 @@ export default function Speech(props) {
     // start listening, khi start render lại 2 lần, lần thứ 2 ms chính thức đặt listening thành true
     SpeechRecognition.startListening();
 
+    // eslint-disable-next-line
     timeOutID = setTimeout(() => {
       console.log('bắt đầu settimeout');
       SpeechRecognition.stopListening();

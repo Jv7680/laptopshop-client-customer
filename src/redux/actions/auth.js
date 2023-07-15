@@ -27,7 +27,9 @@ export const actLoginRequest = (user) => {
             dispatch(actFetchUserRequset(id));
             dispatch(actFetchCartRequest(id));
             dispatch(actFetchWishListRequest(id));
+            return true;
         }
+        return false;
     };
 }
 

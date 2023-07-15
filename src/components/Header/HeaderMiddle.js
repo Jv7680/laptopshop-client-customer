@@ -11,7 +11,7 @@ import { actFetchWishListRequest } from '../../redux/actions/wishlist';
 import { customizedNavigate } from '../../utils/components/GlobalHistory';
 import Speech from './Speech';
 import callApi from '../../utils/apiCaller';
-
+import { getProductFirstImageURL } from '../../firebase/CRUDImage';
 import "react-simple-keyboard/build/css/index.css";
 import './header-middle.css';
 
@@ -108,7 +108,7 @@ class HeaderMiddle extends Component {
       const foundIndex = arrHistorySearch.findIndex(findFunc);
       console.log('foundIndex:', foundIndex);
       //nếu tìm thấy
-      if (foundIndex != -1) {
+      if (foundIndex !== -1) {
         //xóa chuỗi đó khỏi mảng
         arrHistorySearch.splice(foundIndex, 1);
         arrHistorySearch.unshift(textSearch.trim());
@@ -305,6 +305,18 @@ class HeaderMiddle extends Component {
     toast.success('Đã xóa khỏi mục ưa thích')
   }
 
+  setImage = async (productId) => {
+    let imageURL = await getProductFirstImageURL(productId, false);
+
+    if (imageURL === '') {
+      imageURL = process.env.PUBLIC_URL + '/images/logo/logoPTCustomer1.png';
+      document.getElementById(`image-product-${productId}`).setAttribute('src', imageURL);
+    }
+    else {
+      document.getElementById(`image-product-${productId}`).setAttribute('src', imageURL);
+    }
+  }
+
   render() {
     setTimeout(() => {
       //ẩn các dòng historySearch empty
@@ -423,7 +435,14 @@ class HeaderMiddle extends Component {
                                   return (
                                     <React.Fragment key={index}>
                                       <div className='wishlist-item'>
-                                        <img style={{ cursor: "pointer" }} src={item.product.image} alt="notFound" onClick={() => { this.handleClickWishlistItem(item.product.productId) }} />
+                                        <img
+                                          id={`image-product-${item.product.productId}`}
+                                          style={{ cursor: "pointer" }}
+                                          src={process.env.PUBLIC_URL + '/images/logo/logoPTCustomer1.png'}
+                                          onLoad={(event) => { event.target.src.includes('/images/logo/logoPTCustomer1.png') && this.setImage(item.product.productId, false) }}
+                                          alt="notFound"
+                                          onClick={() => { this.handleClickWishlistItem(item.product.productId) }}
+                                        />
                                         <div className='wishlist-item__name' style={{ fontSize: 18, lineHeight: "initial", flex: 1, cursor: "pointer" }} onClick={() => { this.handleClickWishlistItem(item.product.productId) }}>{item.product.productName}</div>
                                         <div className='wishlist-item__unlike' style={{ width: 50 }}><i id='unLikeAction' className="fa fa-heart-o" style={{ cursor: "pointer" }} onClick={() => { this.handleUnlikeWishlistItem(item.wishlistId) }} /></div>
                                       </div>

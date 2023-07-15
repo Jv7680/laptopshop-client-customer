@@ -37,7 +37,7 @@ class ProductList extends Component {
         console.log("componentDidUpdate");
         let { keySearch } = this.props;
         let { currentKeySearch } = this.state;
-        if (keySearch !== currentKeySearch) {
+        if (keySearch && keySearch !== currentKeySearch) {
             this.fetch_reload_data_search_page();
         }
 
@@ -103,6 +103,12 @@ class ProductList extends Component {
         window.scrollTo(0, 0);
     }
 
+    sortByNewestProduct = (a, b) => {
+        let x = a.productId;
+        let y = b.productId;
+        return y - x;
+    }
+
     sortByPricesGoUp = (a, b) => {
         let x = a.unitprice * ((100 - a.discount) / 100);
         let y = b.unitprice * ((100 - b.discount) / 100);
@@ -132,8 +138,12 @@ class ProductList extends Component {
         }
 
         // sort products
-        if (sort.pricesGoUp) {
-            products.sort(this.sortByPricesGoUp)
+        if (sort.newestProduct) {
+            products.sort(this.sortByNewestProduct);
+        }
+        else if (sort.pricesGoUp) {
+            products.sort(this.sortByPricesGoUp);
+
         }
         else if (sort.pricesGoDown) {
             products.sort(this.sortByPricesGoDown)

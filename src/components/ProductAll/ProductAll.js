@@ -85,6 +85,7 @@ class ProductAll extends Component {
       },
       //sort hiện tại
       sort: {
+        newestProduct: true,
         pricesGoUp: false,
         pricesGoDown: false,
         mostSold: false,
