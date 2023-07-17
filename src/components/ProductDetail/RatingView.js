@@ -39,26 +39,7 @@ class RatingView extends Component {
 
   componentDidMount = async () => {
     currentId = this.props.product.productId;
-    let allProductHaveBought = await this.getAllIdProductHaveBought(parseInt(localStorage.getItem("_idaccount")));
-    let thisProductHasBought = allProductHaveBought.find(element => element === this.props.product.productId);
-
-    if (thisProductHasBought) {
-      console.log("mua rồi");
-      this.setState({
-        bought: true
-      });
-    }
-    else {
-      this.setState({
-        bought: false
-      });
-    }
-  }
-
-  componentDidUpdate = async () => {
-    console.log("componentDidUpdate", currentId, this.props.product.productId);
-    if (currentId !== this.props.product.productId) {
-      currentId = this.props.product.productId;
+    if (localStorage.getItem("_idaccount")) {
       let allProductHaveBought = await this.getAllIdProductHaveBought(parseInt(localStorage.getItem("_idaccount")));
       let thisProductHasBought = allProductHaveBought.find(element => element === this.props.product.productId);
 
@@ -72,6 +53,30 @@ class RatingView extends Component {
         this.setState({
           bought: false
         });
+      }
+    }
+
+  }
+
+  componentDidUpdate = async () => {
+    console.log("componentDidUpdate", currentId, this.props.product.productId);
+    if (currentId !== this.props.product.productId) {
+      currentId = this.props.product.productId;
+      if (localStorage.getItem("_idaccount")) {
+        let allProductHaveBought = await this.getAllIdProductHaveBought(parseInt(localStorage.getItem("_idaccount")));
+        let thisProductHasBought = allProductHaveBought.find(element => element === this.props.product.productId);
+
+        if (thisProductHasBought) {
+          console.log("mua rồi");
+          this.setState({
+            bought: true
+          });
+        }
+        else {
+          this.setState({
+            bought: false
+          });
+        }
       }
     }
   }
