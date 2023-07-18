@@ -301,6 +301,8 @@ class HeaderMiddle extends Component {
   handleUnlikeWishlistItem = async (wishlistId) => {
     let token = localStorage.getItem('_auth');
     await callApi(`wishlist/delete/${wishlistId}`, 'DELETE', undefined, token);
+
+    id = localStorage.getItem("_id");
     this.props.fetch_wishlist(id);
     toast.success('Đã xóa khỏi mục ưa thích')
   }
