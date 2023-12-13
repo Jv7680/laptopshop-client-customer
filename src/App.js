@@ -32,7 +32,7 @@ class App extends Component {
 
     window.onload = () => {
       window.google.accounts.id.initialize({
-        client_id: "719600623259-ub1lq10i7fgmqnv2hh84dkjbt7266sur.apps.googleusercontent.com",
+        client_id: "539641224811-h3ur3mgkjbt8l3tql4ofaq63j9prasic.apps.googleusercontent.com",
         callback: this.handleCallBack,
       });
     };
