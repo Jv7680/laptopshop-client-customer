@@ -1,14 +1,12 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom';
-import ProductItem from "./ProductItem";
-import { connect } from "react-redux";
-import { actFetchProductsRequest, actGetProductOfKeyRequest, actFetchProducts, actFetchKeySearch } from "../../redux/actions/products";
-import { actFetchFilterData } from '../../redux/reducers/filterData';
-import store from '../..';
-import callApi from '../../utils/apiCaller';
+import React, { Component } from 'react';
 import Paginator from 'react-js-paginator';
+import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom';
+import { actFetchProducts, actFetchProductsRequest, actGetProductOfKeyRequest } from "../../redux/actions/products";
+import { actFetchFilterData } from '../../redux/reducers/filterData';
+import ProductItem from "./ProductItem";
 
-import './style.css'
+import './style.css';
 
 class ProductList extends Component {
     constructor(props) {
@@ -23,12 +21,12 @@ class ProductList extends Component {
     componentDidMount = async () => {
         // trường hợp vào trang products
         if (this.props.history.location.pathname === "/products") {
-            await store.dispatch(actFetchFilterData([]));
+            await this.props.clear_filter();
             await this.fetch_reload_data();
         }
         // trường hợp vào trang search
         else {
-            await store.dispatch(actFetchFilterData([]));
+            await this.props.clear_filter();
             await this.fetch_reload_data_search_page();
         }
     }
@@ -63,9 +61,9 @@ class ProductList extends Component {
     async fetch_reload_data_search_page() {
         let { keySearch } = this.props; console.log("keySearch", keySearch);
         // mới vào search sẽ clear products
-        const newKeyPage = { key: keySearch, totalPage: 1 };
+        // const newKeyPage = { key: keySearch, totalPage: 1 };
         if (keySearch !== this.state.currentKeySearch && this.props.products.length !== 0) {
-            await store.dispatch(actFetchProducts([]));
+            await this.props.clear_products();
         }
 
         // await store.dispatch(actFetchKeySearch(newKeyPage));
@@ -216,7 +214,13 @@ const mapDispatchToProps = dispatch => {
     return {
         fetch_products: (page) => {
             return dispatch(actFetchProductsRequest(page));
-        }
+        },
+        clear_filter: () => {
+            return dispatch(actFetchFilterData([]));
+        },
+        clear_products: () => {
+            return dispatch(actFetchProducts([]));
+        },
     };
 };
 

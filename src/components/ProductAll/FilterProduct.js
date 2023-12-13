@@ -1,19 +1,15 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom';
-import BeautyStars from 'beauty-stars';
-import Slider from 'react-input-slider';
-import Swal from "sweetalert2";
-import { toast } from 'react-toastify';
-import './style.css'
-import { formatNumberToVND } from '../../config/TYPE';
 import axios from "axios";
-import { API_URL } from '../../constants/Config';
-import { actFetchProducts } from '../../redux/actions/products';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import Slider from 'react-input-slider';
+import { withRouter } from 'react-router-dom';
+import Swal from "sweetalert2";
 import store from '../..';
+import { formatNumberToVND } from '../../config/TYPE';
+import { API_URL } from '../../constants/Config';
+import { actFetchProducts, actFetchProductsRequest } from '../../redux/actions/products';
 import { actFetchFilterData } from '../../redux/reducers/filterData';
-import { actFetchProductsRequest } from '../../redux/actions/products';
 import { startLoading, stopLoading } from '../Loading/setLoadingState';
+import './style.css';
 
 const sliderStyleFrom = {
     track: {
@@ -462,7 +458,7 @@ class FilterProduct extends Component {
 
         return (
             <div className="col-2 filter-area">
-                <span className="filter-tittle"><i class="fa fa-filter"></i> Bộ lọc tìm kiếm</span>
+                <span className="filter-tittle"><i className="fa fa-filter"></i> Bộ lọc tìm kiếm</span>
 
                 {/* Button filter */}
                 <div className="row no-gutters producer-area" style={{ flexDirection: "column" }}>

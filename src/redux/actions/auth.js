@@ -11,7 +11,7 @@ import store from '../..';
 
 export const actLoginRequest = (user) => {
     return async dispatch => {
-        const res = await callApi('auth/login', 'POST', user);
+        const res = await callApi('auth/login', 'POST', user, null, true);
         console.log('actLoginRequest res: ', res);
         if (res && res.data.token) {
             console.log(res.data)

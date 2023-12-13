@@ -104,7 +104,7 @@ class SortProduct extends Component {
                         :
                         (
                             <div className='col-auto'>
-                                <span className='btn-filter' onClick={(event) => { this.handleOnClickBtnFilter(event) }} name='btnFilter'><i class="fa fa-filter"></i> Bộ lọc</span>
+                                <span className='btn-filter' onClick={(event) => { this.handleOnClickBtnFilter(event) }} name='btnFilter'><i className="fa fa-filter"></i> Bộ lọc</span>
                             </div>
                         )
                 }

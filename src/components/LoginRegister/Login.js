@@ -58,11 +58,11 @@ class Login extends Component {
       password
     }
     console.log(user)
-    startLoading();
+    // startLoading();
     // await this.props.loginRequest(user);
     let result = await store.dispatch(actLoginRequest(user));
     console.log("result login", result);
-    doneLoading();
+    // doneLoading();
 
     setTimeout(() => {
       const errorCode = localStorage.getItem('errorCode');

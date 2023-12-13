@@ -129,7 +129,7 @@ export const actFetchKeySearch = (newKeyPage) => {
 export const actFetchProductsDiscountRequest = (page) => {
     const newOffset = page === null || page === undefined ? 1 : page
     return async dispatch => {
-        const res = await callApi(`product/all`, 'GET', null);
+        const res = await callApi(`product/all`, 'GET', null, null, true);
         if (res && res.status === 200) {
             dispatch(actFetchProductsDiscount(res.data.listProducts));
         }
@@ -147,7 +147,7 @@ export const actFetchProductsDiscount = (products) => {
 export const actFetchProductsBestRequest = (page) => {
     const newOffset = page === null || page === undefined ? 1 : page
     return async dispatch => {
-        const res = await callApi(`product/all`, 'GET', null);
+        const res = await callApi(`product/all`, 'GET', null, null, true);
         console.log('actFetchProductsBestRequest: ', res);
         if (res && res.status === 200) {
             const array = Object.values(res.data.listProducts);
