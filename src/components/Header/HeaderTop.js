@@ -81,7 +81,7 @@ class HeaderTop extends Component {
 
                             <Link to="#" className=" fix-link-color dropdown-toggle navList__item-user-link" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               <img src={user.image || user.imageLink || "https://i.ibb.co/NCdx7FF/avatar-Default.png"} className="navList__item-user-avatar"></img>
-                              <div className="navList__item-user-name ml-10"> {user.lastname + " " + user.firstname || "not found"}</div>
+                              <div className="navList__item-user-name ml-10"> {Object.keys(user).length !== 0 ? user.lastname + " " + user.firstname : "..."}</div>
                             </Link>
                             <div className="fix-text-item dropdown-menu ht-setting-list " aria-labelledby="dropdownMenuLink">
                               {/* {
