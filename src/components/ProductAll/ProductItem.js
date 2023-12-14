@@ -116,6 +116,10 @@ class ProductItem extends Component {
     }
   }
 
+  handleImageError = (event) => {
+    event.target.src = process.env.PUBLIC_URL + '/images/logo/logoPTCustomer.png';
+  }
+
   render() {
     const { product, wishlist } = this.props;
     const { quantity, redirectYourLogin, imageURL } = this.state;
@@ -134,7 +138,8 @@ class ProductItem extends Component {
             <img
               className={`fix-img image-product-${product.productId}`}
               src={imageURL}
-              alt={'/images/logo/logoPTCustomer.png'}
+              alt={'Not Found'}
+              onError={this.handleImageError}
               onClick={(id) => this.getInfoProduct(product.productId)}
               style={{ cursor: "pointer" }}
             />

@@ -120,6 +120,9 @@ class TopTreddingProductItems extends Component {
     }
   }
 
+  handleImageError = (event) => {
+    event.target.src = process.env.PUBLIC_URL + '/images/logo/logoPTCustomer.png';
+  }
 
   render() {
     const { product, wishlist } = this.props;
@@ -131,7 +134,8 @@ class TopTreddingProductItems extends Component {
           <div className="fix-img-div-new product-image">
             <img className="fix-img"
               src={imageURL}
-              alt="Li's Product"
+              alt={'Not Found'}
+              onError={this.handleImageError}
               onClick={(id) => this.getInfoProduct(product.productId)}
               style={{ width: '100%', height: '100%', objectFit: 'contain', cursor: "pointer" }} />
             {
